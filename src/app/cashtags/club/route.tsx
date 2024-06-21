@@ -2,16 +2,15 @@
 import { Button } from "frames.js/next";
 import { frames } from "../frames";
 import { lensClient } from "@/app/services/lens";
+import { CASHTAG_BG_URL } from "@/app/services/utils";
 
 // HOME
 const handleRequest = frames(async (ctx) => {
   const { moneyClubAddress, moneyClubProfileId } = ctx.searchParams;
-  const currentState = ctx.state;
   const profile = await lensClient.profile.fetch({ forProfileId: moneyClubProfileId });
   const moneyClub = { image: profile?.metadata?.picture?.optimized?.uri, handle: profile?.handle?.localName };
 
   const updatedState = {
-    ...currentState,
     moneyClubAddress,
     moneyClubProfileId,
     moneyClub,
@@ -19,26 +18,26 @@ const handleRequest = frames(async (ctx) => {
 
   return {
     image: (
-      <span tw="flex flex-col">
+      <div tw="flex w-full h-full items-center justify-center" style={{ backgroundImage: `url(${CASHTAG_BG_URL})`, backgroundSize: '100% 100%' }}>
         <div tw="flex flex-col items-center">
-          <span tw="flex h-48 w-48 overflow-hidden rounded-full border-8 border-gray-800">
+          <span tw="flex h-56 w-56 overflow-hidden rounded-full border-2 border-white">
             <img
               src={moneyClub.image}
               tw="h-full w-full"
             />
           </span>
-          <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10">
+          <div tw="flex justify-center items-center text-black mt-12 text-20" style={{ fontWeight: 1000 }}>
             ${moneyClub.handle}
           </div>
         </div>
-      </span>
+      </div>
     ),
     buttons: [
       <Button action="post" target={{ pathname: "/club-check" }}>
         Check price
       </Button>
     ],
-    state: updatedState
+    state: updatedState,
   };
 });
 

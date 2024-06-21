@@ -5,15 +5,13 @@ import { frames } from "../frames";
 import { getCurrentPrice, getAllowance, getBalance } from "@/app/services/moneyClubs";
 import { lensClient } from "@/app/services/lens";
 import { formatEther } from "viem";
-import { roundedToFixed } from "@/app/services/utils";
+import { roundedToFixed, CASHTAG_BG_URL } from "@/app/services/utils";
 
 const handleRequest = frames(async (ctx) => {
   const { moneyClubAddress, moneyClub } = ctx.state;
   const currentState = ctx.state;
 
-  if (ctx.message?.transactionId) {
-    console.log(`ctx.message?.transactionId: ${ctx.message?.transactionId}`);
-  }
+  console.log('ctx.state', ctx.state);
 
   let walletAddress: string | undefined = ctx.message?.connectedAddress;
   if (!walletAddress && ctx.message?.profileId) { // lens payload
@@ -61,21 +59,21 @@ const handleRequest = frames(async (ctx) => {
 
   return {
     image: (
-      <div tw="flex flex-col items-center justify-center">
+      <div tw="flex w-full h-full items-center justify-center" style={{ backgroundImage: `url(${CASHTAG_BG_URL})`, backgroundSize: '100% 100%' }}>
         <div tw="flex flex-col items-center">
-          <span tw="flex h-48 w-48 overflow-hidden rounded-full border-8 border-gray-800">
+          <span tw="flex h-56 w-56 overflow-hidden rounded-full border-2 border-white">
             <img
-              src={moneyClub.image}
+              src={moneyClub?.image}
               tw="h-full w-full"
             />
           </span>
-          <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10">
-            ${moneyClub.handle}
+          <div tw="flex justify-center items-center text-black mt-12 text-20" style={{ fontWeight: 1000 }}>
+            ${moneyClub?.handle}
           </div>
-        </div>
-        <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10 text-5xl">
-          Current Price: {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 0)}`}
-          <span tw="ml-2 text-green-400">$BONSAI</span>
+          <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-4 px-5 mt-10 text-16">
+            Current Price: {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 0)}`}
+            <span tw="ml-2 text-green-400">$BONSAI</span>
+          </div>
         </div>
       </div>
     ),
