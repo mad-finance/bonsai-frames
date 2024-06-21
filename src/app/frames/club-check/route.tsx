@@ -26,6 +26,7 @@ const handleRequest = frames(async (ctx) => {
     });
   }
 
+  // TODO: get club info with this wallet's latest trade. calculate delta and show in the card
   const [currentPrice, allowance, balance, profile] = await Promise.all([
     getCurrentPrice(moneyClubAddress as `0x${string}`),
     getAllowance(walletAddress as `0x${string}`),

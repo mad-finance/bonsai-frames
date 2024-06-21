@@ -29,17 +29,17 @@ export const POST = frames(async (ctx) => {
     );
   }
 
-  const txPending = !!transaction?.blockHash && allowance !== BigInt(0);
+  const txPending = !transaction?.blockHash || allowance === BigInt(0);
   if (txPending) {
     buttons.push(
-      <Button action="tx" target="/club-buy-tx" post_url="/club-buy-status">
-        Buy
+      <Button action="post" target={{ pathname: "/club-approve-status" }}>
+        Refresh
       </Button>
     );
   } else {
     buttons.push(
-      <Button action="post" target={{ pathname: "/club-approve-status" }}>
-        Refresh
+      <Button action="tx" target="/club-buy-tx" post_url="/club-buy-status">
+        Buy
       </Button>
     );
   }
