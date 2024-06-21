@@ -27,7 +27,7 @@ export const FEATURED_CLUB_PROFILE_ID = "0x73b1";
 export const FEATURED_CLUB_ADDRESS = "0x36a8e6d4d704e422852bbefbdd9d93a2472d915e";
 
 export const frames = createFrames<State>({
-  baseUrl: isProduction ? process.env.VERCEL_URL : "http://madfi.ngrok.io",
+  baseUrl: isProduction ? "https://frames.bonsai.meme" : "http://madfi.ngrok.io",
   basePath: "/cashtags",
   debug: !isProduction,
   initialState: {},
