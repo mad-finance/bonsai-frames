@@ -8,10 +8,7 @@ import { formatEther } from "viem";
 import { roundedToFixed, CASHTAG_BG_URL } from "@/app/services/utils";
 
 const handleRequest = frames(async (ctx) => {
-  const { moneyClubAddress, moneyClub } = ctx.state;
-  const currentState = ctx.state;
-
-  console.log('ctx.state', ctx.state);
+  const { moneyClubAddress, moneyClubProfileId } = ctx.searchParams;
 
   let walletAddress: string | undefined = ctx.message?.connectedAddress;
   if (!walletAddress && ctx.message?.profileId) { // lens payload
@@ -25,11 +22,14 @@ const handleRequest = frames(async (ctx) => {
   }
 
   // TODO: get club info with this wallet's latest trade. calculate delta and show in the card
-  const [currentPrice, allowance, balance] = await Promise.all([
+  const [currentPrice, allowance, balance, profile] = await Promise.all([
     getCurrentPrice(moneyClubAddress as `0x${string}`),
     getAllowance(walletAddress as `0x${string}`),
-    getBalance(moneyClubAddress as `0x${string}`, walletAddress as `0x${string}`)
+    getBalance(moneyClubAddress as `0x${string}`, walletAddress as `0x${string}`),
+    lensClient.profile.fetch({ forProfileId: moneyClubProfileId })
   ]);
+
+  const moneyClub = { image: profile?.metadata?.picture?.optimized?.uri, handle: profile?.handle?.localName };
 
   const buttons: any[] = [];
 
@@ -55,7 +55,13 @@ const handleRequest = frames(async (ctx) => {
     );
   }
 
-  const updatedState = { ...currentState, walletAddress, currentPrice: currentPrice.toString() };
+  const updatedState = {
+    walletAddress,
+    moneyClubAddress,
+    moneyClubProfileId,
+    moneyClub,
+    currentPrice: currentPrice.toString()
+  };
 
   return {
     image: (
@@ -67,12 +73,11 @@ const handleRequest = frames(async (ctx) => {
               tw="h-full w-full"
             />
           </span>
-          <div tw="flex justify-center items-center text-black mt-12 text-20" style={{ fontWeight: 1000 }}>
+          <div tw="flex justify-center items-center text-black mt-8 text-20" style={{ fontWeight: 1000 }}>
             ${moneyClub?.handle}
           </div>
-          <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-4 px-5 mt-10 text-16">
-            Current Price: {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 0)}`}
-            <span tw="ml-2 text-green-400">$BONSAI</span>
+          <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-4 px-5 mt-6 text-14">
+            {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 0) } $BONSAI`}
           </div>
         </div>
       </div>

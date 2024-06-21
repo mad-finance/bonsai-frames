@@ -10,12 +10,6 @@ const handleRequest = frames(async (ctx) => {
   const profile = await lensClient.profile.fetch({ forProfileId: moneyClubProfileId });
   const moneyClub = { image: profile?.metadata?.picture?.optimized?.uri, handle: profile?.handle?.localName };
 
-  const updatedState = {
-    moneyClubAddress,
-    moneyClubProfileId,
-    moneyClub,
-  };
-
   return {
     image: (
       <div tw="flex w-full h-full items-center justify-center" style={{ backgroundImage: `url(${CASHTAG_BG_URL})`, backgroundSize: '100% 100%' }}>
@@ -33,11 +27,10 @@ const handleRequest = frames(async (ctx) => {
       </div>
     ),
     buttons: [
-      <Button action="post" target={{ pathname: "/club-check" }}>
+      <Button action="post" target={{ pathname: "/club-check", query: { moneyClubAddress, moneyClubProfileId } }}>
         Check price
       </Button>
-    ],
-    state: updatedState,
+    ]
   };
 });
 
