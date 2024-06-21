@@ -9,12 +9,12 @@ export const POST = frames(async (ctx) => {
   const { moneyClubAddress } = ctx.state;
   const currentState = ctx.state;
 
-  const [currentPrice, allowance, txReceipt] = await Promise.all([
+  const [currentPrice, allowance, transaction] = await Promise.all([
     getCurrentPrice(moneyClubAddress as `0x${string}`),
     getAllowance(currentState.walletAddress as `0x${string}`),
     (async () => {
       if (ctx.message?.transactionId) {
-        return await publicClient.getTransactionReceipt({ hash: ctx.message?.transactionId });
+        return await publicClient.getTransaction({ hash: ctx.message?.transactionId });
       }
     })()
   ]);
@@ -31,7 +31,7 @@ export const POST = frames(async (ctx) => {
     );
   }
 
-  if (txReceipt?.status === "success" && allowance !== BigInt(0)) {
+  if (!!transaction?.blockHash && allowance !== BigInt(0)) {
     buttons.push(
       <Button action="tx" target="/club-buy-tx" post_url="/club-buy-status">
         Buy
@@ -40,7 +40,7 @@ export const POST = frames(async (ctx) => {
   } else {
     buttons.push(
       <Button action="post_redirect" target="/club-buy-status">
-        Refresh
+        Tx Pending; Refresh
       </Button>
     );
   }
