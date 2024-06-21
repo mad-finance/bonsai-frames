@@ -21,7 +21,8 @@ export const POST = frames(async (ctx) => {
   ]);
 
   const buttons: any[] = [];
-  if (transactionId) {
+  const txPending = !transaction?.blockHash || allowance === BigInt(0);
+  if (transactionId && txPending) {
     buttons.push(
       <Button action="link" target={polygonScanUrl(transactionId! as `0x${string}`)}>
         View on block explorer
@@ -29,7 +30,6 @@ export const POST = frames(async (ctx) => {
     );
   }
 
-  const txPending = !transaction?.blockHash || allowance === BigInt(0);
   if (txPending) {
     buttons.push(
       <Button action="post" target={{ pathname: "/club-approve-status" }}>
