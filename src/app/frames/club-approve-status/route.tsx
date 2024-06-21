@@ -8,20 +8,19 @@ import { roundedToFixed, polygonScanUrl } from "@/app/services/utils";
 export const POST = frames(async (ctx) => {
   const { moneyClubAddress } = ctx.state;
   const currentState = ctx.state;
+  const transactionId = ctx.message?.transactionId || currentState.transactionId;
 
   const [currentPrice, allowance, transaction] = await Promise.all([
     getCurrentPrice(moneyClubAddress as `0x${string}`),
     getAllowance(currentState.walletAddress as `0x${string}`),
     (async () => {
-      if (ctx.message?.transactionId) {
-        return await publicClient.getTransaction({ hash: ctx.message?.transactionId });
+      if (!!transactionId) {
+        return await publicClient.getTransaction({ hash: transactionId! as `0x${string}` });
       }
     })()
   ]);
 
   const buttons: any[] = [];
-
-  let transactionId = ctx.message?.transactionId || currentState.transactionId;
   if (transactionId) {
     buttons.push(
       <Button action="link" target={polygonScanUrl(transactionId! as `0x${string}`)}>
@@ -30,7 +29,8 @@ export const POST = frames(async (ctx) => {
     );
   }
 
-  if (!!transaction?.blockHash && allowance !== BigInt(0)) {
+  const txPending = !!transaction?.blockHash && allowance !== BigInt(0);
+  if (txPending) {
     buttons.push(
       <Button action="tx" target="/club-buy-tx" post_url="/club-buy-status">
         Buy
@@ -38,8 +38,8 @@ export const POST = frames(async (ctx) => {
     );
   } else {
     buttons.push(
-      <Button action="post_redirect" target="/club-approve-status">
-        Tx Pending; Refresh
+      <Button action="post" target={{ pathname: "/club-approve-status" }}>
+        Refresh
       </Button>
     );
   }
@@ -61,8 +61,16 @@ export const POST = frames(async (ctx) => {
           </div>
         </div>
         <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10 text-5xl">
-          Current Price: {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 0)}`}
-          <span tw="ml-2 text-green-400">$BONSAI</span>
+          {
+            txPending
+              ? 'Transaction Pending...'
+              : (
+                <>
+                  Current Price: {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 0)}`}
+                  <span tw="ml-2 text-green-400">$BONSAI</span>
+                </>
+              )
+          }
         </div>
       </div>
     ),
