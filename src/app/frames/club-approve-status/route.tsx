@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 import { Button } from "frames.js/next";
 import { frames } from "../frames";
-import { getCurrentPrice, getAllowance } from "@/app/services/moneyClubs";
+import { getCurrentPrice, getAllowance, publicClient } from "@/app/services/moneyClubs";
 import { formatEther } from "viem";
 import { roundedToFixed, polygonScanUrl } from "@/app/services/utils";
 
@@ -9,15 +9,21 @@ export const POST = frames(async (ctx) => {
   const { moneyClubAddress } = ctx.state;
   const currentState = ctx.state;
 
-  const [currentPrice, allowance] = await Promise.all([
+  const [currentPrice, allowance, txReceipt] = await Promise.all([
     getCurrentPrice(moneyClubAddress as `0x${string}`),
-    getAllowance(currentState.walletAddress as `0x${string}`)
+    getAllowance(currentState.walletAddress as `0x${string}`),
+    (async () => {
+      if (ctx.message?.transactionId) {
+        return await publicClient.getTransactionReceipt({ hash: ctx.message?.transactionId });
+      }
+    })()
   ]);
 
   const buttons: any[] = [];
 
+  let transactionId;
   if (ctx.message?.transactionId) {
-    console.log(`ctx.message?.transactionId: ${ctx.message?.transactionId}`);
+    transactionId = ctx.message!.transactionId;
     buttons.push(
       <Button action="link" target={polygonScanUrl(ctx.message?.transactionId)}>
         View on block explorer
@@ -25,7 +31,7 @@ export const POST = frames(async (ctx) => {
     );
   }
 
-  if (allowance !== BigInt(0)) {
+  if (txReceipt?.status === "success" && allowance !== BigInt(0)) {
     buttons.push(
       <Button action="tx" target="/club-buy-tx" post_url="/club-buy-status">
         Buy
@@ -39,7 +45,7 @@ export const POST = frames(async (ctx) => {
     );
   }
 
-  const updatedState = { ...currentState, currentPrice: currentPrice.toString() };
+  const updatedState = { ...currentState, currentPrice: currentPrice.toString(), transactionId };
 
   return {
     image: (

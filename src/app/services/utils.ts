@@ -7,4 +7,4 @@ export const roundedToFixed = (input: number, digits = 4): string => {
 
 export function polygonScanUrl(id: `0x${string}`, route?: string) {
   return `https://polygonscan.com/${route || 'tx'}/${id}`;
-}
+};
