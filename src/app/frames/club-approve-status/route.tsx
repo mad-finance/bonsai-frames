@@ -21,11 +21,10 @@ export const POST = frames(async (ctx) => {
 
   const buttons: any[] = [];
 
-  let transactionId;
-  if (ctx.message?.transactionId) {
-    transactionId = ctx.message!.transactionId;
+  let transactionId = ctx.message?.transactionId || currentState.transactionId;
+  if (transactionId) {
     buttons.push(
-      <Button action="link" target={polygonScanUrl(ctx.message?.transactionId)}>
+      <Button action="link" target={polygonScanUrl(transactionId! as `0x${string}`)}>
         View on block explorer
       </Button>
     );
@@ -39,7 +38,7 @@ export const POST = frames(async (ctx) => {
     );
   } else {
     buttons.push(
-      <Button action="post_redirect" target="/club-buy-status">
+      <Button action="post_redirect" target="/club-approve-status">
         Tx Pending; Refresh
       </Button>
     );
