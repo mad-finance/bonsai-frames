@@ -42,19 +42,16 @@ const handleRequest = frames(async (ctx) => {
       </Button>
     );
   }
-
+  // TODO: debugging
   if (true || allowance === BigInt(0)) {
-    console.log("/");
-    console.log("/club-check");
-    console.log("/club-approve-status");
     buttons.push(
-      <Button action="tx" target="/club-approve-tx" post_url="http://madfi.ngrok.io/frames/club-check">
+      <Button action="tx" target="/club-approve-tx" post_url="/club-approve-status">
         Approve $BONSAI
       </Button>
     );
   } else {
     buttons.push(
-      <Button action="tx" target="/club-buy-tx" post_url="club-buy-status">
+      <Button action="tx" target="/club-buy-tx" post_url="/club-buy-status">
         Buy
       </Button>
     );
