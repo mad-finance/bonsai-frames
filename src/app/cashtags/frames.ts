@@ -20,14 +20,14 @@ export type State = {
 
 const isProduction = process.env.NODE_ENV === "production";
 
-// frames.bonsai.meme/frames/club?moneyClubAddress=0x123&moneyClubProfileId=0x123
+// frames.bonsai.meme/cashtags/club?moneyClubAddress=0x123&moneyClubProfileId=0x123
 
 // TODO: fetch featured profile from db/subgraph
 export const FEATURED_CLUB_PROFILE_ID = "0x73b1";
 export const FEATURED_CLUB_ADDRESS = "0x36a8e6d4d704e422852bbefbdd9d93a2472d915e";
 
 export const frames = createFrames<State>({
-  basePath: "/frames",
+  basePath: "/cashtags",
   initialState: {
     moneyClubProfileId: FEATURED_CLUB_PROFILE_ID,
     moneyClubAddress: FEATURED_CLUB_ADDRESS,
@@ -35,7 +35,7 @@ export const frames = createFrames<State>({
   debug: process.env.NODE_ENV !== "production",
   middleware: [
     imagesWorkerMiddleware({
-      imagesRoute: isProduction ? "/images" : "http://madfi.ngrok.io/frames/images",
+      imagesRoute: isProduction ? "/images" : "http://madfi.ngrok.io/cashtags/images",
       secret: process.env.IMAGE_WORKER_SECRET,
     }),
     farcasterHubContext({

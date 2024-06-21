@@ -8,7 +8,7 @@ import { formatEther } from "viem";
 import { roundedToFixed } from "@/app/services/utils";
 
 const handleRequest = frames(async (ctx) => {
-  const { moneyClubAddress, moneyClubProfileId } = ctx.state;
+  const { moneyClubAddress, moneyClub } = ctx.state;
   const currentState = ctx.state;
 
   if (ctx.message?.transactionId) {
@@ -27,11 +27,10 @@ const handleRequest = frames(async (ctx) => {
   }
 
   // TODO: get club info with this wallet's latest trade. calculate delta and show in the card
-  const [currentPrice, allowance, balance, profile] = await Promise.all([
+  const [currentPrice, allowance, balance] = await Promise.all([
     getCurrentPrice(moneyClubAddress as `0x${string}`),
     getAllowance(walletAddress as `0x${string}`),
-    getBalance(moneyClubAddress as `0x${string}`, walletAddress as `0x${string}`),
-    lensClient.profile.fetch({ forProfileId: moneyClubProfileId })
+    getBalance(moneyClubAddress as `0x${string}`, walletAddress as `0x${string}`)
   ]);
 
   const buttons: any[] = [];
@@ -58,8 +57,7 @@ const handleRequest = frames(async (ctx) => {
     );
   }
 
-  const moneyClub = { image: profile?.metadata?.picture?.optimized?.uri, handle: profile?.handle?.localName };
-  const updatedState = { ...currentState, walletAddress, currentPrice: currentPrice.toString(), moneyClub };
+  const updatedState = { ...currentState, walletAddress, currentPrice: currentPrice.toString() };
 
   return {
     image: (

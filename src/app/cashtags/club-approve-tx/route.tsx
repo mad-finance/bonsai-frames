@@ -5,13 +5,7 @@ import { MONEY_CLUBS_CONTRACT_ADDRESS } from "@/app/services/moneyClubs";
 import { BONSAI_TOKEN_ADDRESS } from "@/app/services/utils";
 
 export const POST = frames(async (ctx) => {
-  if (!ctx.message) {
-    throw new Error("No message");
-  }
-
-  if (ctx.message?.transactionId) {
-    console.log("got the tx id");
-  }
+  if (!ctx.message) throw new Error("No message");
 
   const calldata = encodeFunctionData({
     abi: erc20Abi,

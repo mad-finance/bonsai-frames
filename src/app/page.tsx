@@ -6,7 +6,7 @@ export async function generateMetadata() {
     // provide a full URL to your /frames endpoint
     other: await fetchMetadata(
       new URL(
-        "/frames",
+        "/cashtags",
         process.env.VERCEL_URL
           ? `https://${process.env.VERCEL_URL}`
           : "http://localhost:3000"
