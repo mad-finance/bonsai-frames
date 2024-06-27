@@ -7,10 +7,13 @@ import { BONSAI_TOKEN_ADDRESS } from "@/app/services/utils";
 export const POST = frames(async (ctx) => {
   if (!ctx.message) throw new Error("No message");
 
+  const currentPriceBigInt = BigInt(ctx.state.currentPrice!);
+  const quoteAmount = currentPriceBigInt + (currentPriceBigInt * BigInt(5) / BigInt(100));
+
   const calldata = encodeFunctionData({
     abi: erc20Abi,
     functionName: "approve",
-    args: [MONEY_CLUBS_CONTRACT_ADDRESS, parseEther('10000')] // maxUint256]
+    args: [MONEY_CLUBS_CONTRACT_ADDRESS, quoteAmount]
   });
 
   return transaction({

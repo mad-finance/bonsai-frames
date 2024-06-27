@@ -10,6 +10,8 @@ export type State = {
   moneyClubProfileId?: string;
   moneyClubAddress?: string;
   currentPrice?: string;
+  buyAmount?: string;
+  sellAmount?: string;
   walletAddress?: string;
   moneyClub?: {
     image?: string;
@@ -68,9 +70,8 @@ export const frames = createFrames<State>({
           // verify the payload spec
           if (!isLensFrameActionPayload(body)) return undefined;
 
-          // TODO: not working
-          // // verify is authenticated
-          // if (!await verifyFrameSignature(body)) return undefined;
+          // verify is authenticated
+          if (!await verifyFrameSignature(body)) return undefined;
 
           const result = await getLensFrameMessage(body);
 

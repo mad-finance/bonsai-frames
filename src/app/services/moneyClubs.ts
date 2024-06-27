@@ -1,6 +1,6 @@
 import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client";
 import { polygon } from "viem/chains";
-import { createPublicClient, http, parseUnits, erc20Abi } from "viem";
+import { createPublicClient, http, parseUnits, erc20Abi, formatEther } from "viem";
 import MadMoneyClubsAbi from "./abi/MadMoneyClubs.json";
 import { BONSAI_TOKEN_ADDRESS } from "./utils";
 
@@ -13,6 +13,15 @@ const REGISTERED_CLUB = gql`
       supply
       feesEarned
       currentPrice
+    }
+  }
+`;
+
+const PREVIOUS_TRADE = gql`
+  query PreviousTrade($id: Bytes!, $startOfDayUTC: Int!, $isBuy: Boolean!) {
+    trades(where:{club: $id, isBuy: $isBuy, createdAt_gt: $startOfDayUTC}, orderBy: createdAt, orderDirection: asc, first: 1) {
+      price
+      createdAt
     }
   }
 `;
@@ -44,12 +53,34 @@ export const getRegisteredClub = async (id: `0x${string}`) => {
   return data.club;
 };
 
-export const getCurrentPrice = async (id: `0x${string}`): Promise<BigInt> => {
+export const getCurrentPrice = async (id: `0x${string}`, amount: string = '1'): Promise<BigInt> => {
   const price = publicClient.readContract({
     address: MONEY_CLUBS_CONTRACT_ADDRESS,
     abi: MadMoneyClubsAbi,
     functionName: "getBuyPrice",
-    args: [id, parseUnits('1', DECIMALS)],
+    args: [id, parseUnits(amount, DECIMALS)],
+  });
+
+  return price as unknown as BigInt;
+};
+
+export const getBuyPriceAfterFees = async (id: `0x${string}`, amount: string): Promise<BigInt> => {
+  const price = publicClient.readContract({
+    address: MONEY_CLUBS_CONTRACT_ADDRESS,
+    abi: MadMoneyClubsAbi,
+    functionName: "getBuyPriceAfterFees",
+    args: [id, parseUnits(amount, DECIMALS)],
+  });
+
+  return price as unknown as BigInt;
+};
+
+export const getSellPriceAfterFees = async (id: `0x${string}`, amount: string): Promise<BigInt> => {
+  const price = publicClient.readContract({
+    address: MONEY_CLUBS_CONTRACT_ADDRESS,
+    abi: MadMoneyClubsAbi,
+    functionName: "getSellPriceAfterFees",
+    args: [id, parseUnits(amount, DECIMALS)],
   });
 
   return price as unknown as BigInt;
@@ -75,4 +106,22 @@ export const getAllowance = async (account: `0x${string}`): Promise<BigInt> => {
   });
 
   return allowance as unknown as BigInt;
+};
+
+export const getPreviousTrade = async (id: `0x${string}`, isBuy = true) => {
+  const startOfDayUTC = Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate());
+  const { data } = await subgraphClient().query({
+    query: PREVIOUS_TRADE,
+    variables: { id: id.toLowerCase(), startOfDayUTC: Math.floor(startOfDayUTC / 1000), isBuy }
+  });
+
+  return data.trades[0] || {};
+};
+
+// TODO: fetch latest trade on the day, using the createdAt > startOfTodayUTC
+export const calculatePriceDelta = (price: bigint, lastTradePrice: bigint): number => {
+  console.log('price', formatEther(price))
+  console.log('lastTradePrice', formatEther(lastTradePrice))
+  const priceDelta: bigint = price > lastTradePrice ? price - lastTradePrice : lastTradePrice - price;
+  return parseFloat(((priceDelta * BigInt(100)) / lastTradePrice).toString());
 };

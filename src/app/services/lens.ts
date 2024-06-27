@@ -8,11 +8,33 @@ interface VerifyFrameSignatureProps {
 export const lensClient = new LensClient({ environment: production });
 
 export const verifyFrameSignature = async ({ untrustedData, trustedData }: VerifyFrameSignatureProps): Promise<boolean> => {
-  const response = await lensClient.frames.createFrameTypedData({ ...untrustedData });
+  const {
+    url,
+    inputText,
+    state,
+    buttonIndex,
+    actionResponse,
+    profileId,
+    pubId,
+    specVersion,
+    deadline,
+    identityToken,
+  } = untrustedData;
+  const typedData = await lensClient.frames.createFrameTypedData({
+    url,
+    inputText,
+    state,
+    buttonIndex,
+    actionResponse,
+    profileId,
+    pubId,
+    specVersion,
+    deadline,
+  });
   const verification = await lensClient.frames.verifyFrameSignature({
     identityToken: untrustedData.identityToken,
     signature: trustedData.messageBytes,
-    signedTypedData: response,
+    signedTypedData: typedData,
   });
 
   return verification === FrameVerifySignatureResult.Verified;

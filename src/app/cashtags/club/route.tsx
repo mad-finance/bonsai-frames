@@ -2,7 +2,7 @@
 import { Button } from "frames.js/next";
 import { frames } from "../frames";
 import { lensClient } from "@/app/services/lens";
-import { CASHTAG_BG_URL } from "@/app/services/utils";
+import { CASHTAG_BG_URL, CASHTAG_DEX_URL } from "@/app/services/utils";
 
 // HOME
 const handleRequest = frames(async (ctx) => {
@@ -27,6 +27,9 @@ const handleRequest = frames(async (ctx) => {
       </div>
     ),
     buttons: [
+      <Button action="link" target={`${CASHTAG_DEX_URL}?moneyClubAddress=${moneyClubAddress}`}>
+        Dex
+      </Button>,
       <Button action="post" target={{ pathname: "/club-check", query: { moneyClubAddress, moneyClubProfileId } }}>
         Check price
       </Button>

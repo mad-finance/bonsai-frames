@@ -2,15 +2,16 @@
 import { Button } from "frames.js/next";
 import { getAddressForFid } from "frames.js";
 import { frames } from "../frames";
-import { getCurrentPrice, getAllowance, getBalance } from "@/app/services/moneyClubs";
+import { getCurrentPrice, getBalance, DECIMALS, getPreviousTrade, calculatePriceDelta } from "@/app/services/moneyClubs";
 import { lensClient } from "@/app/services/lens";
-import { formatEther } from "viem";
+import { formatEther, formatUnits } from "viem";
 import { roundedToFixed, CASHTAG_BG_URL } from "@/app/services/utils";
 
 const handleRequest = frames(async (ctx) => {
-  const { moneyClubAddress, moneyClubProfileId } = ctx.searchParams;
+  const { moneyClubProfileId } = ctx.searchParams;
+  const moneyClubAddress = ctx.searchParams.moneyClubAddress || ctx.state.moneyClubAddress;
 
-  let walletAddress: string | undefined = ctx.message?.connectedAddress;
+  let walletAddress: string | undefined = ctx.message?.connectedAddress || ctx.state.walletAddress;
   if (!walletAddress && ctx.message?.profileId) { // lens payload
     const owner = await lensClient.profile.fetch({ forProfileId: ctx.message?.profileId });
     walletAddress = owner?.ownedBy.address;
@@ -21,39 +22,32 @@ const handleRequest = frames(async (ctx) => {
     });
   }
 
-  // TODO: get club info with this wallet's latest trade. calculate delta and show in the card
-  const [currentPrice, allowance, balance, profile] = await Promise.all([
+  const [currentPrice, balance, moneyClub, prevTrade] = await Promise.all([
     getCurrentPrice(moneyClubAddress as `0x${string}`),
-    getAllowance(walletAddress as `0x${string}`),
     getBalance(moneyClubAddress as `0x${string}`, walletAddress as `0x${string}`),
-    lensClient.profile.fetch({ forProfileId: moneyClubProfileId })
+    (async () => {
+      if (!!ctx.state.moneyClub) return ctx.state.moneyClub;
+      const profile = await lensClient.profile.fetch({ forProfileId: moneyClubProfileId });
+      return { image: profile?.metadata?.picture?.optimized?.uri, handle: profile?.handle?.localName };
+    })(),
+    getPreviousTrade(moneyClubAddress as `0x${string}`)
   ]);
-
-  const moneyClub = { image: profile?.metadata?.picture?.optimized?.uri, handle: profile?.handle?.localName };
 
   const buttons: any[] = [];
 
   if (balance !== BigInt(0)) {
     buttons.push(
-      <Button action="tx" target="/club-sell-tx" post_url="/club-sell-status">
+      <Button action="post" target="/club-sell">
         Sell
       </Button>
     );
   }
-  // TODO: debugging
-  if (true || allowance === BigInt(0)) {
-    buttons.push(
-      <Button action="tx" target="/club-approve-tx" post_url="/club-approve-status">
-        Approve $BONSAI
-      </Button>
-    );
-  } else {
-    buttons.push(
-      <Button action="tx" target="/club-buy-tx" post_url="/club-buy-status">
-        Buy
-      </Button>
-    );
-  }
+
+  buttons.push(
+    <Button action="post" target="/club-calculate-price">
+      Buy
+    </Button>
+  );
 
   const updatedState = {
     walletAddress,
@@ -73,17 +67,35 @@ const handleRequest = frames(async (ctx) => {
               tw="h-full w-full"
             />
           </span>
-          <div tw="flex justify-center items-center text-black mt-8 text-20" style={{ fontWeight: 1000 }}>
+          <div tw="flex justify-center items-center text-black mt-4 text-20" style={{ fontWeight: 1000 }}>
             ${moneyClub?.handle}
           </div>
-          <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-4 px-5 mt-6 text-14">
-            {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 0) } $BONSAI`}
-          </div>
+          {balance === BigInt(0) && (
+            <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-4 px-6 mt-6 text-14">
+              {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 2)} $BONSAI`}
+            </div>
+          )}
+          {balance !== BigInt(0) && (
+            <div tw="flex flex-col">
+              <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-2 px-4 mt-4 text-12">
+                {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 2)} $BONSAI`}
+                {prevTrade?.price && (
+                  <span tw={BigInt(prevTrade.price) < BigInt(currentPrice.toString()) ? 'text-green-600 ml-2' : 'text-red-600 ml-2'}>
+                    {`${BigInt(prevTrade.price) < BigInt(currentPrice.toString()) ? '+' : '-'}${calculatePriceDelta(BigInt(currentPrice.toString()), BigInt(prevTrade.price))}%`}
+                  </span>
+                )}
+              </div>
+              <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-2 px-2 mt-4 text-12">
+                {`Balance: ${roundedToFixed(parseFloat(formatUnits(balance as bigint, DECIMALS)), 2)}`}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     ),
     buttons,
-    state: updatedState
+    state: updatedState,
+    textInput: 'Buy / Sell amount'
   };
 });
 
