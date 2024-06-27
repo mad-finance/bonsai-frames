@@ -27,7 +27,7 @@ const handleRequest = frames(async (ctx) => {
       </div>
     ),
     buttons: [
-      <Button action="link" target={`${CASHTAG_DEX_URL}?moneyClubAddress=${moneyClubAddress}`}>
+      <Button action="link" target={`${CASHTAG_DEX_URL}/?address=${moneyClubAddress}`}>
         Dex
       </Button>,
       <Button action="post" target={{ pathname: "/club-check", query: { moneyClubAddress, moneyClubProfileId } }}>
