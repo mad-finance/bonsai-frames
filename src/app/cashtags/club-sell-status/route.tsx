@@ -3,7 +3,7 @@ import { Button } from "frames.js/next";
 import { frames } from "../frames";
 import { getBalance, publicClient, DECIMALS } from "@/app/services/moneyClubs";
 import { formatUnits } from "viem";
-import { roundedToFixed, polygonScanUrl } from "@/app/services/utils";
+import { roundedToFixed, polygonScanUrl, CASHTAG_BG_URL, CASHTAG_DEX_URL } from "@/app/services/utils";
 
 export const POST = frames(async (ctx) => {
   const { moneyClubAddress } = ctx.state;
@@ -41,21 +41,26 @@ export const POST = frames(async (ctx) => {
         ⬅️ Back
       </Button>
     );
+    buttons.push(
+      <Button action="link" target={`${CASHTAG_DEX_URL}/?address=${moneyClubAddress}`}>
+        Dex
+      </Button>
+    );
   }
 
   const updatedState = { ...currentState, transactionId };
 
   return {
     image: (
-      <div tw="flex flex-col items-center justify-center">
+      <div tw="flex w-full h-full items-center justify-center" style={{ backgroundImage: `url(${CASHTAG_BG_URL})`, backgroundSize: '100% 100%' }}>
         <div tw="flex flex-col items-center">
-          <span tw="flex h-48 w-48 overflow-hidden rounded-full border-8 border-gray-800">
+          <span tw="flex h-56 w-56 overflow-hidden rounded-full border-2 border-white">
             <img
               src={currentState.moneyClub?.image}
               tw="h-full w-full"
             />
           </span>
-          <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10">
+          <div tw="flex justify-center items-center text-black mt-12 text-20" style={{ fontWeight: 1000 }}>
             ${currentState.moneyClub?.handle}
           </div>
         </div>
