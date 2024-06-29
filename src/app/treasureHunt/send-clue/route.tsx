@@ -26,7 +26,7 @@ const handleRequest = frames(async (ctx) => {
         <Button action="post" key="button1" target="/clue">
           ⬅️ Back
         </Button>,
-        <Button action="tx" key="button1" target="/clue-tx" post_url="/clue-found">
+        <Button action="tx" key="button2" target="/clue-tx" post_url="/clue-found">
           Send Clue!
         </Button>,
       ],
