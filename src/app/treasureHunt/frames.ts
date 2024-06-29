@@ -25,7 +25,6 @@ const isProduction = process.env.NODE_ENV === "production"
 export const frames = createFrames<State>({
   baseUrl: isProduction ? "https://frames.bonsai.meme" : "http://localhost:3000",
   basePath: "/treasureHunt",
-  initialState: {},
   debug: process.env.NODE_ENV !== "production",
   imagesRoute: "/treasureHunt",
   middleware: [
@@ -60,9 +59,8 @@ export const frames = createFrames<State>({
           // verify the payload spec
           if (!isLensFrameActionPayload(body)) return undefined
 
-          // TODO: not working
-          // // verify is authenticated
-          // if (!await verifyFrameSignature(body)) return undefined;
+          // verify is authenticated
+          if (!(await verifyFrameSignature(body))) return undefined
 
           const result = await getLensFrameMessage(body)
 

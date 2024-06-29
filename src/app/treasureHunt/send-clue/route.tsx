@@ -37,7 +37,7 @@ const handleRequest = frames(async (ctx) => {
       image: clueImg,
       buttons: [
         <Button action="post" key="button1" target="/clue">
-          Try Another
+          ❌ Try Another
         </Button>,
       ],
     }
