@@ -31,7 +31,7 @@ export const POST = frames(async (ctx) => {
 
   if (txPending) {
     buttons.push(
-      <Button action="post" target={{ pathname: "/club-approve-status" }}>
+      <Button action="post" target={{ pathname: "/club-sell-status" }}>
         Refresh
       </Button>
     );
@@ -63,18 +63,13 @@ export const POST = frames(async (ctx) => {
           <div tw="flex justify-center items-center text-black mt-12 text-20" style={{ fontWeight: 1000 }}>
             ${currentState.moneyClub?.handle}
           </div>
-        </div>
-        <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10 text-5xl">
-          {
-            txPending
-              ? 'Transaction Pending...'
-              : (
-                <div tw="flex justify-center items-center">
-                  <div tw="bg-black text-white font-bold rounded-xl py-4 px-6 mt-6 text-14 mr-6">Sold!</div>
-                  <div tw="bg-black text-white font-bold rounded-xl py-4 px-6 mt-6 text-14">{`Balance: ${roundedToFixed(parseFloat(formatUnits(balance as bigint, DECIMALS)), 2)}`}</div>
-                </div>
-              )
-          }
+          <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10 text-5xl">
+            {
+              txPending
+                ? 'Transaction Pending...'
+                : <>{`Balance: ${roundedToFixed(parseFloat(formatUnits(balance as bigint, DECIMALS)), 2)}`}</>
+            }
+          </div>
         </div>
       </div>
     ),

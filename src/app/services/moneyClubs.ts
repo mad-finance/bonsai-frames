@@ -119,11 +119,8 @@ export const getPreviousTrade = async (id: `0x${string}`) => {
   return data.trades[0] || {};
 };
 
-export const calculatePriceDelta = (price: bigint, lastTradePrice: bigint): { valuePct: number; positive?: boolean } => {
+export const calculatePriceDelta = (price: bigint, lastTradePrice: bigint): number => {
   const priceDelta: bigint = price > lastTradePrice ? price - lastTradePrice : lastTradePrice - price;
   const priceDeltaPercentage = parseFloat(formatEther(priceDelta)) * 100 / parseFloat(formatEther(price));
-  return {
-    valuePct: parseFloat(roundedToFixed(priceDeltaPercentage, 2)),
-    positive: price > lastTradePrice,
-  };
+  return parseFloat(roundedToFixed(priceDeltaPercentage, 2));
 };

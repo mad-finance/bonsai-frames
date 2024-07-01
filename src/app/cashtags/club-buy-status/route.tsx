@@ -46,6 +46,7 @@ export const POST = frames(async (ctx) => {
         Dex
       </Button>
     );
+    // TODO: share your balance as a frame => buttrfly: post composer
   }
 
   const updatedState = { ...currentState, transactionId };
@@ -63,13 +64,13 @@ export const POST = frames(async (ctx) => {
           <div tw="flex justify-center items-center text-black mt-12 text-20" style={{ fontWeight: 1000 }}>
             ${currentState.moneyClub?.handle}
           </div>
-        </div>
-        <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10 text-5xl">
-          {
-            txPending
-              ? <>Transaction Pending...</>
-              : <>{`Balance: ${roundedToFixed(parseFloat(formatUnits(balance as bigint, DECIMALS)), 2)}`}</>
-          }
+          <div tw="flex justify-center items-center bg-gray-800 text-white font-bold rounded-xl py-3 px-4 mt-10 text-5xl">
+            {
+              txPending
+                ? <>Transaction Pending...</>
+                : <>{`Balance: ${roundedToFixed(parseFloat(formatUnits(balance as bigint, DECIMALS)), 2)}`}</>
+            }
+          </div>
         </div>
       </div>
     ),
