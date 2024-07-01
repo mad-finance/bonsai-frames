@@ -1,0 +1,266 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      { "name": "_hub", "type": "address", "internalType": "address" },
+      { "name": "_collectPublicationAction", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "HUB",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "addClues",
+    "inputs": [
+      { "name": "huntId", "type": "uint256", "internalType": "uint256" },
+      { "name": "clues", "type": "bytes32[]", "internalType": "bytes32[]" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "collectPublicationAction",
+    "inputs": [],
+    "outputs": [
+      { "name": "", "type": "address", "internalType": "contract CollectPublicationAction" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "createHunt",
+    "inputs": [
+      { "name": "totalClues", "type": "uint256", "internalType": "uint256" },
+      { "name": "rewardToken", "type": "address", "internalType": "address" },
+      { "name": "rewardAmount", "type": "uint256", "internalType": "uint256" },
+      { "name": "numWinners", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [{ "name": "huntId", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "foundClue",
+    "inputs": [
+      { "name": "huntId", "type": "uint256", "internalType": "uint256" },
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "clue", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "foundPost",
+    "inputs": [
+      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "profileId", "type": "uint256", "internalType": "uint256" },
+      { "name": "pubId", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getModuleMetadataURI",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "string", "internalType": "string" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hub",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "contract ILensHub" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "huntCreators",
+    "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hunts",
+    "inputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "outputs": [
+      { "name": "numWinners", "type": "uint256", "internalType": "uint256" },
+      { "name": "rewardAmount", "type": "uint256", "internalType": "uint256" },
+      { "name": "rewardToken", "type": "address", "internalType": "address" },
+      { "name": "totalClues", "type": "uint256", "internalType": "uint256" },
+      { "name": "treasure", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "initialize",
+    "inputs": [{ "name": "moduleOwner", "type": "address", "internalType": "address" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "initializePublicationAction",
+    "inputs": [
+      { "name": "profileId", "type": "uint256", "internalType": "uint256" },
+      { "name": "pubId", "type": "uint256", "internalType": "uint256" },
+      { "name": "", "type": "address", "internalType": "address" },
+      { "name": "data", "type": "bytes", "internalType": "bytes" }
+    ],
+    "outputs": [{ "name": "", "type": "bytes", "internalType": "bytes" }],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "metadataURI",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "string", "internalType": "string" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "postToHunt",
+    "inputs": [
+      { "name": "", "type": "uint256", "internalType": "uint256" },
+      { "name": "", "type": "uint256", "internalType": "uint256" }
+    ],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "processPublicationAction",
+    "inputs": [
+      {
+        "name": "processActionParams",
+        "type": "tuple",
+        "internalType": "struct Types.ProcessActionParams",
+        "components": [
+          { "name": "publicationActedProfileId", "type": "uint256", "internalType": "uint256" },
+          { "name": "publicationActedId", "type": "uint256", "internalType": "uint256" },
+          { "name": "actorProfileId", "type": "uint256", "internalType": "uint256" },
+          { "name": "actorProfileOwner", "type": "address", "internalType": "address" },
+          { "name": "transactionExecutor", "type": "address", "internalType": "address" },
+          { "name": "referrerProfileIds", "type": "uint256[]", "internalType": "uint256[]" },
+          { "name": "referrerPubIds", "type": "uint256[]", "internalType": "uint256[]" },
+          {
+            "name": "referrerPubTypes",
+            "type": "uint8[]",
+            "internalType": "enum Types.PublicationType[]"
+          },
+          { "name": "actionModuleData", "type": "bytes", "internalType": "bytes" }
+        ]
+      }
+    ],
+    "outputs": [{ "name": "", "type": "bytes", "internalType": "bytes" }],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "renounceOwnership",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setModuleMetadataURI",
+    "inputs": [{ "name": "_metadataURI", "type": "string", "internalType": "string" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setTreasure",
+    "inputs": [
+      { "name": "huntId", "type": "uint256", "internalType": "uint256" },
+      { "name": "treasure", "type": "bytes32", "internalType": "bytes32" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "supportsInterface",
+    "inputs": [{ "name": "interfaceID", "type": "bytes4", "internalType": "bytes4" }],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "pure"
+  },
+  {
+    "type": "function",
+    "name": "transferOwnership",
+    "inputs": [{ "name": "newOwner", "type": "address", "internalType": "address" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "ClueAdded",
+    "inputs": [
+      { "name": "huntId", "type": "uint256", "indexed": false, "internalType": "uint256" },
+      { "name": "clue", "type": "bytes32", "indexed": false, "internalType": "bytes32" }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "HuntCreated",
+    "inputs": [
+      { "name": "huntId", "type": "uint256", "indexed": false, "internalType": "uint256" },
+      { "name": "creator", "type": "address", "indexed": false, "internalType": "address" },
+      { "name": "totalClues", "type": "uint256", "indexed": false, "internalType": "uint256" },
+      { "name": "rewardToken", "type": "address", "indexed": false, "internalType": "address" },
+      { "name": "rewardAmount", "type": "uint256", "indexed": false, "internalType": "uint256" },
+      { "name": "numWinners", "type": "uint256", "indexed": false, "internalType": "uint256" }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
+    "inputs": [
+      { "name": "previousOwner", "type": "address", "indexed": true, "internalType": "address" },
+      { "name": "newOwner", "type": "address", "indexed": true, "internalType": "address" }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "TreasureAdded",
+    "inputs": [
+      { "name": "huntId", "type": "uint256", "indexed": false, "internalType": "uint256" },
+      { "name": "treasure", "type": "bytes32", "indexed": false, "internalType": "bytes32" }
+    ],
+    "anonymous": false
+  },
+  { "type": "error", "name": "AlreadyFound", "inputs": [] },
+  { "type": "error", "name": "BadClue", "inputs": [] },
+  { "type": "error", "name": "CollectRequired", "inputs": [] },
+  {
+    "type": "error",
+    "name": "MissingClue",
+    "inputs": [{ "name": "clue", "type": "bytes32", "internalType": "bytes32" }]
+  },
+  { "type": "error", "name": "NotAllCluesDistributed", "inputs": [] },
+  { "type": "error", "name": "NotCreator", "inputs": [] },
+  { "type": "error", "name": "NotHub", "inputs": [] },
+  { "type": "error", "name": "TotalCluesExceeded", "inputs": [] },
+  { "type": "error", "name": "TreasureAlreadySet", "inputs": [] }
+]
