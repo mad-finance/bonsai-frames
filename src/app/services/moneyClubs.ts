@@ -2,7 +2,7 @@ import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client";
 import { polygon } from "viem/chains";
 import { createPublicClient, http, parseUnits, erc20Abi, formatEther } from "viem";
 import MadMoneyClubsAbi from "./abi/MadMoneyClubs.json";
-import { BONSAI_TOKEN_ADDRESS } from "./utils";
+import { BONSAI_TOKEN_ADDRESS, roundedToFixed } from "./utils";
 
 const REGISTERED_CLUB = gql`
   query Club($id: Bytes!) {
@@ -18,8 +18,8 @@ const REGISTERED_CLUB = gql`
 `;
 
 const PREVIOUS_TRADE = gql`
-  query PreviousTrade($id: Bytes!, $startOfDayUTC: Int!, $isBuy: Boolean!) {
-    trades(where:{club: $id, isBuy: $isBuy, createdAt_gt: $startOfDayUTC}, orderBy: createdAt, orderDirection: asc, first: 1) {
+  query PreviousTrade($id: Bytes!, $startOfDayUTC: Int!) {
+    trades(where:{club: $id, createdAt_gt: $startOfDayUTC}, orderBy: createdAt, orderDirection: asc, first: 1) {
       price
       createdAt
     }
@@ -108,20 +108,22 @@ export const getAllowance = async (account: `0x${string}`): Promise<BigInt> => {
   return allowance as unknown as BigInt;
 };
 
-export const getPreviousTrade = async (id: `0x${string}`, isBuy = true) => {
-  const startOfDayUTC = Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate());
+export const getPreviousTrade = async (id: `0x${string}`) => {
+  const now = new Date();
+  const twentyFourHoursAgoUTC = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours() - 24);
   const { data } = await subgraphClient().query({
     query: PREVIOUS_TRADE,
-    variables: { id: id.toLowerCase(), startOfDayUTC: Math.floor(startOfDayUTC / 1000), isBuy }
+    variables: { id: id.toLowerCase(), startOfDayUTC: Math.floor(twentyFourHoursAgoUTC / 1000) }
   });
 
   return data.trades[0] || {};
 };
 
-// TODO: fetch latest trade on the day, using the createdAt > startOfTodayUTC
-export const calculatePriceDelta = (price: bigint, lastTradePrice: bigint): number => {
-  console.log('price', formatEther(price))
-  console.log('lastTradePrice', formatEther(lastTradePrice))
+export const calculatePriceDelta = (price: bigint, lastTradePrice: bigint): { valuePct: number; positive?: boolean } => {
   const priceDelta: bigint = price > lastTradePrice ? price - lastTradePrice : lastTradePrice - price;
-  return parseFloat(((priceDelta * BigInt(100)) / lastTradePrice).toString());
+  const priceDeltaPercentage = parseFloat(formatEther(priceDelta)) * 100 / parseFloat(formatEther(price));
+  return {
+    valuePct: parseFloat(roundedToFixed(priceDeltaPercentage, 2)),
+    positive: price > lastTradePrice,
+  };
 };
