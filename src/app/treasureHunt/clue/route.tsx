@@ -1,12 +1,25 @@
 import { Button } from "frames.js/next"
-import { clueFoundImg, clueImg, frames } from "../frames"
-import { ctxToFound, getProfileOwner } from "@/app/services/treasureHunt"
+import { clueFoundImg, clueImg, frames, treasureImg } from "../frames"
+import { ctxToFound, ctxToTreasureFound, getProfileOwner } from "@/app/services/treasureHunt"
 
 const handleRequest = frames(async (ctx) => {
   const owner = await getProfileOwner(ctx.message?.profileId)
-  const found = await ctxToFound(ctx, owner)
+  const [found, treasureFound] = await Promise.all([
+    ctxToFound(ctx, owner),
+    ctxToTreasureFound(ctx, owner),
+  ])
 
-  if (found) {
+  if (treasureFound) {
+    return {
+      image: treasureImg,
+      buttons: [
+        <Button action="post" key="button" target="/start">
+          ⬅️ Back
+        </Button>,
+      ],
+      state: { ...ctx.state, owner },
+    }
+  } else if (found) {
     return {
       image: clueFoundImg,
       buttons: [

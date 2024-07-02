@@ -12,7 +12,7 @@ export const clueFoundImg =
 export const clueNotFoundImg =
   "https://link.storjshare.io/s/jxrxfp6cucye6r556lc7q7pj4vmq/frames/clue-not-found.jpg?wrap=0"
 export const treasureImg =
-  "https://link.storjshare.io/s/jxvkeocjqolfced6imjsu5ipwihq/frames/treasure.jpg?wrap=0"
+  "https://link.storjshare.io/s/jvoxea66sehvbwaixgfjb43nv5ra/frames/treasure-found.jpg?wrap=0"
 
 export type State = {
   owner?: string
