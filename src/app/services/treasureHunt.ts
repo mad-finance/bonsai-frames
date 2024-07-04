@@ -42,15 +42,12 @@ const subgraphClient = () => {
 
 export const isTreasureFound = async (address, huntId) => {
   const huntIdFormatted = convertIntToHexLensId(huntId.toString())
-  console.log(huntIdFormatted)
   const { data } = await subgraphClient().query({
     query: TREASURE_HUNT,
     variables: { id: huntIdFormatted },
   })
 
-  console.log(data)
-
-  const treasureClue = data.treasureHunt.treasure
+  const treasureClue = data.treasureHunt?.treasure?.id
   if (treasureClue !== null) {
     return await publicClient.readContract({
       address: TREASURE_HUNT_ADDRESS,
