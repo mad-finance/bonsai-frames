@@ -48,7 +48,7 @@ export const isTreasureFound = async (address, huntId) => {
   })
 
   const treasureClue = data.treasureHunt?.treasure?.id
-  if (treasureClue !== null) {
+  if (treasureClue) {
     return await publicClient.readContract({
       address: TREASURE_HUNT_ADDRESS,
       abi: TreasureHuntAbi,
