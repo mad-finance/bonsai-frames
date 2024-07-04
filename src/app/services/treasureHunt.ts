@@ -8,7 +8,8 @@ import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client"
 export const TREASURE_HUNT_ADDRESS = "0xDDEFa1ea12Fa171586028a0a6e328c0cB57B46B2"
 export const LENS_HUB_ADDRESS = "0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d"
 
-const madfiSubgraphUrl = `https://gateway-arbitrum.network.thegraph.com/api/${process.env.MONEY_CLUBS_SUBGRAPH_API_KEY}/subgraphs/id/BT7yTf18FbLQpbZ35k9sTnQ8PVNEjG3QgbsggCMnC6oU`
+// const madfiSubgraphUrl = `https://gateway-arbitrum.network.thegraph.com/api/${process.env.MONEY_CLUBS_SUBGRAPH_API_KEY}/subgraphs/id/BT7yTf18FbLQpbZ35k9sTnQ8PVNEjG3QgbsggCMnC6oU`
+const madfiSubgraphUrl = "https://api.studio.thegraph.com/query/18207/madfi-subgraph/version/latest"
 
 const TREASURE_HUNT = gql`
   query Hunt($id: Bytes!) {
