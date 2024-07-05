@@ -7,6 +7,8 @@ import { LENS_HUB_ADDRESS, TREASURE_HUNT_ADDRESS } from "@/app/services/treasure
 export const POST = frames(async (ctx) => {
   if (!ctx.message) throw new Error("No message")
 
+  console.log("message", ctx.message)
+
   const pubParts = ctx.message?.pubId.split("-")
 
   const calldata = encodeFunctionData({
