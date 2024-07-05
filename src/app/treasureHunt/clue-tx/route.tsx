@@ -8,20 +8,7 @@ export const POST = frames(async (ctx) => {
   if (!ctx.message) throw new Error("No message")
   if (!ctx.state) throw new Error("No state")
 
-  console.log("message", ctx.message)
-  console.log("state", ctx.state)
-
   const pubParts = ctx.message?.pubId.split("-")
-
-  console.log("args", {
-    publicationActedProfileId: pubParts[0],
-    publicationActedId: pubParts[1],
-    actorProfileId: ctx.message?.profileId,
-    referrerProfileIds: [],
-    referrerPubIds: [],
-    actionModuleAddress: TREASURE_HUNT_ADDRESS,
-    actionModuleData: ctx.state?.secret,
-  })
 
   const calldata = encodeFunctionData({
     abi: LensHubAbi,
