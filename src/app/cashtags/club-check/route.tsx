@@ -2,10 +2,10 @@
 import { Button } from "frames.js/next";
 import { getAddressForFid } from "frames.js";
 import { frames } from "../frames";
-import { getCurrentPrice, getBalance, DECIMALS, getPreviousTrade, calculatePriceDelta } from "@/app/services/moneyClubs";
+import { getCurrentPrice, getBalance, getPreviousTrade } from "@/app/services/moneyClubs";
 import { lensClient } from "@/app/services/lens";
-import { formatEther, formatUnits } from "viem";
-import { roundedToFixed, CASHTAG_BG_URL } from "@/app/services/utils";
+import { CASHTAG_BG_URL } from "@/app/services/utils";
+import { ProfileInfo, PriceInfo, BalanceInfo } from "@/app/components/cashtags";
 
 const handleRequest = frames(async (ctx) => {
   const { moneyClubProfileId } = ctx.searchParams;
@@ -60,37 +60,15 @@ const handleRequest = frames(async (ctx) => {
   return {
     image: (
       <div tw="flex w-full h-full items-center justify-center" style={{ backgroundImage: `url(${CASHTAG_BG_URL})`, backgroundSize: '100% 100%' }}>
-        <div tw="flex flex-col items-center">
-          <span tw="flex h-56 w-56 overflow-hidden rounded-full border-2 border-white">
-            <img
-              src={moneyClub?.image}
-              tw="h-full w-full"
-            />
-          </span>
-          <div tw="flex justify-center items-center text-black mt-4 text-20" style={{ fontWeight: 1000 }}>
-            ${moneyClub?.handle}
-          </div>
-          {balance === BigInt(0) && (
-            <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-4 px-6 mt-6 text-14">
-              {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 2)} $BONSAI`}
-            </div>
-          )}
+        <ProfileInfo image={moneyClub.image} handle={moneyClub.handle!}>
+          {balance === BigInt(0) && <PriceInfo currentPrice={currentPrice as bigint} />}
           {balance !== BigInt(0) && (
-            <div tw="flex flex-col">
-              <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-2 px-4 mt-4 text-12">
-                {`${roundedToFixed(parseFloat(formatEther(currentPrice as bigint)), 2)} $BONSAI`}
-                {prevTrade?.price && (
-                  <span tw={BigInt(prevTrade.price) < BigInt(currentPrice.toString()) ? 'text-green-600 ml-2' : 'text-red-600 ml-2'}>
-                    {`${BigInt(prevTrade.price) < BigInt(currentPrice.toString()) ? '+' : '-'}${calculatePriceDelta(BigInt(currentPrice.toString()), BigInt(prevTrade.price))}%`}
-                  </span>
-                )}
-              </div>
-              <div tw="flex justify-center items-center bg-black text-white font-bold rounded-xl py-2 px-2 mt-4 text-12">
-                {`Balance: ${roundedToFixed(parseFloat(formatUnits(balance as bigint, DECIMALS)), 2)}`}
-              </div>
-            </div>
+            <>
+              <PriceInfo currentPrice={currentPrice as bigint} prevPrice={prevTrade?.price as bigint} />
+              <BalanceInfo balance={balance} leftSpace />
+            </>
           )}
-        </div>
+        </ProfileInfo>
       </div>
     ),
     buttons,

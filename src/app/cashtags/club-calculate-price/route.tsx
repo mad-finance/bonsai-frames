@@ -2,8 +2,9 @@
 import { Button } from "frames.js/next";
 import { frames } from "../frames";
 import { getBuyPriceAfterFees, getAllowance, DECIMALS } from "@/app/services/moneyClubs";
-import { formatEther, parseUnits } from "viem";
-import { roundedToFixed, CASHTAG_BG_URL } from "@/app/services/utils";
+import { parseUnits } from "viem";
+import { CASHTAG_BG_URL } from "@/app/services/utils";
+import { ProfileInfo, TransactionInfo } from "@/app/components/cashtags";
 
 const handleRequest = frames(async (ctx) => {
   const { moneyClubAddress, walletAddress, moneyClub, currentPrice } = ctx.state;
@@ -46,21 +47,9 @@ const handleRequest = frames(async (ctx) => {
   return {
     image: (
       <div tw="flex w-full h-full items-center justify-center" style={{ backgroundImage: `url(${CASHTAG_BG_URL})`, backgroundSize: '100% 100%' }}>
-        <div tw="flex flex-col items-center">
-          <span tw="flex h-56 w-56 overflow-hidden rounded-full border-2 border-white">
-            <img
-              src={moneyClub?.image}
-              tw="h-full w-full"
-            />
-          </span>
-          <div tw="flex justify-center items-center text-black mt-8 text-20" style={{ fontWeight: 1000 }}>
-            ${moneyClub?.handle}
-          </div>
-          <div tw="flex justify-center items-center">
-            <div tw="bg-black text-white font-bold rounded-xl py-4 px-6 mt-6 text-14 mr-6">{`Buying ${ctx.message?.inputText} =>`}</div>
-            <div tw="bg-black text-white font-bold rounded-xl py-4 px-6 mt-6 text-14">{`${roundedToFixed(parseFloat(formatEther(calculatedPrice as bigint)), 2)} $BONSAI`}</div>
-          </div>
-        </div>
+        <ProfileInfo image={moneyClub!.image!} handle={moneyClub!.handle!}>
+          <TransactionInfo label="Buying" amount={ctx.message?.inputText} calculatedPrice={calculatedPrice as bigint} />
+        </ProfileInfo>
       </div>
     ),
     buttons,
