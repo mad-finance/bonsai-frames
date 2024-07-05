@@ -40,6 +40,7 @@ const handleRequest = frames(async (ctx) => {
           ❌ Try Another
         </Button>,
       ],
+      state: { ...ctx.state },
     }
   }
 })

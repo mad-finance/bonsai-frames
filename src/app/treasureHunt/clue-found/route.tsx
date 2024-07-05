@@ -4,10 +4,13 @@ import { ctxToFound, ctxToTreasureFound } from "@/app/services/treasureHunt"
 
 const handleRequest = frames(async (ctx) => {
   const transactionId = ctx.message?.transactionId || ctx.state?.transactionId
-  const [found, treasureFound] = await Promise.all([
-    ctxToFound(ctx, ctx.state.owner),
-    ctxToTreasureFound(ctx, ctx.state.owner),
-  ])
+  let found, treasureFound
+  if (ctx.state?.owner) {
+    ;[found, treasureFound] = await Promise.all([
+      ctxToFound(ctx, ctx.state.owner),
+      ctxToTreasureFound(ctx, ctx.state.owner),
+    ])
+  }
 
   let buttons = [
     <Button action="post" key="button1" target="/clue">
