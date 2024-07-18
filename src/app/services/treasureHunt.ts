@@ -5,7 +5,7 @@ import { publicClient } from "./moneyClubs"
 import { keccak256, encodeAbiParameters, parseAbiParameters } from "viem"
 import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client"
 
-export const TREASURE_HUNT_ADDRESS = "0xDDEFa1ea12Fa171586028a0a6e328c0cB57B46B2"
+export const TREASURE_HUNT_ADDRESS = "0xfd74982412DB39d423145d4C13a8dA301Eebc172"
 export const LENS_HUB_ADDRESS = "0xDb46d1Dc155634FbC732f92E853b10B288AD5a1d"
 
 // const madfiSubgraphUrl = `https://gateway-arbitrum.network.thegraph.com/api/${process.env.MONEY_CLUBS_SUBGRAPH_API_KEY}/subgraphs/id/BT7yTf18FbLQpbZ35k9sTnQ8PVNEjG3QgbsggCMnC6oU`
@@ -40,7 +40,7 @@ const subgraphClient = () => {
   })
 }
 
-export const isTreasureFound = async (address, huntId) => {
+export const isTreasureFound = async (profileId, huntId) => {
   const huntIdFormatted = convertIntToHexLensId(huntId.toString())
   const { data } = await subgraphClient().query({
     query: TREASURE_HUNT,
@@ -53,7 +53,7 @@ export const isTreasureFound = async (address, huntId) => {
       address: TREASURE_HUNT_ADDRESS,
       abi: TreasureHuntAbi,
       functionName: "foundClue",
-      args: [huntId, address, treasureClue],
+      args: [huntId, profileId, treasureClue],
     })
   } else return false
 }
@@ -67,18 +67,18 @@ export const postToHunt = async (profileId, pubId) => {
   })
 }
 
-export const ctxToTreasureFound = async (ctx, owner) => {
+export const ctxToTreasureFound = async (ctx) => {
   const [profileId, pubId] = ctx.message?.pubId.split("-")
   const huntId = await postToHunt(profileId, pubId)
-  return await isTreasureFound(owner, huntId)
+  return await isTreasureFound(ctx.message?.profileId, huntId)
 }
 
-export const isPostFound = async (address, profileId, pubId) => {
+export const isPostFound = async (userProfileId, profileId, pubId) => {
   return await publicClient.readContract({
     address: TREASURE_HUNT_ADDRESS,
     abi: TreasureHuntAbi,
     functionName: "foundPost",
-    args: [address, profileId, pubId],
+    args: [userProfileId, profileId, pubId],
   })
 }
 
@@ -87,9 +87,9 @@ export const getProfileOwner = async (forProfileId) => {
   return profile?.ownedBy.address
 }
 
-export const ctxToFound = async (ctx, owner) => {
+export const ctxToFound = async (ctx) => {
   const [profileId, pubId] = ctx.message?.pubId.split("-")
-  return await isPostFound(owner, profileId, pubId)
+  return await isPostFound(ctx.message?.profileId, profileId, pubId)
 }
 
 export const simulateAct = async (args: any, account) => {

@@ -4,16 +4,17 @@ import { getLensFrameMessage, isLensFrameActionPayload } from "frames.js/lens"
 import { imagesWorkerMiddleware } from "frames.js/middleware/images-worker"
 import { getXmtpFrameMessage, isXmtpFrameActionPayload } from "frames.js/xmtp"
 import { farcasterHubContext } from "frames.js/middleware"
+import * as fs from "node:fs/promises"
+import * as path from "node:path"
 import { verifyFrameSignature } from "../services/lens"
 
 export type State = {
-  dealerProfileId: string
-  remainingBalance: string | number
-  betSize: string | number
+  owner?: string
+  hand?: any
   table?: {
-    profileId: string
-    pubId: string
-    tableId: string
+    remainingBalance: string
+    size: string
+    creator: string
   }
   dealerProfile?: {
     image?: string
@@ -29,16 +30,37 @@ export const FEATURED_REMAINING_BAL = "10000000000000000000000" // 10,000
 export const FEATURED_BET_SIZE = "1000000000000000000000" // 1,000
 
 export const frames = createFrames<State>({
+  baseUrl: isProduction ? "https://frames.bonsai.meme" : "http://localhost:3000",
   basePath: "/blackjack",
-  initialState: {
-    dealerProfileId: FEATURED_DEALER_PROFILE_ID,
-    remainingBalance: FEATURED_REMAINING_BAL,
-    betSize: FEATURED_BET_SIZE,
+  debug: !isProduction,
+  initialState: {},
+  imagesRoute: "/images",
+  imageRenderingOptions: async () => {
+    const [regularFont, boldFont] = await Promise.all([
+      fs.readFile(path.join(path.resolve(process.cwd(), "public"), "DegularDisplay-Thin.ttf")),
+      fs.readFile(path.join(path.resolve(process.cwd(), "public"), "DegularDisplay-Semibold.ttf")),
+    ])
+
+    return {
+      imageOptions: {
+        fonts: [
+          {
+            name: "Degular",
+            data: regularFont,
+            weight: 400,
+          },
+          {
+            name: "Degular",
+            data: boldFont,
+            weight: 700,
+          },
+        ],
+      },
+    }
   },
-  debug: process.env.NODE_ENV !== "production",
   middleware: [
     imagesWorkerMiddleware({
-      imagesRoute: isProduction ? "/images" : "http://madfi.ngrok.io/blackjack/images",
+      imagesRoute: "/images",
       secret: process.env.IMAGE_WORKER_SECRET,
     }),
     farcasterHubContext({
@@ -72,9 +94,8 @@ export const frames = createFrames<State>({
           // verify the payload spec
           if (!isLensFrameActionPayload(body)) return undefined
 
-          // TODO: not working
-          // // verify is authenticated
-          // if (!await verifyFrameSignature(body)) return undefined;
+          // verify is authenticated
+          if (!(await verifyFrameSignature(body))) return undefined
 
           const result = await getLensFrameMessage(body)
 

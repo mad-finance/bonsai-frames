@@ -3,10 +3,10 @@ import { clueFoundImg, clueImg, frames, treasureImg } from "../frames"
 import { ctxToFound, ctxToTreasureFound, getProfileOwner } from "@/app/services/treasureHunt"
 
 const handleRequest = frames(async (ctx) => {
-  const owner = await getProfileOwner(ctx.message?.profileId)
-  const [found, treasureFound] = await Promise.all([
-    ctxToFound(ctx, owner),
-    ctxToTreasureFound(ctx, owner),
+  const [owner, found, treasureFound] = await Promise.all([
+    getProfileOwner(ctx.message?.profileId),
+    ctxToFound(ctx),
+    ctxToTreasureFound(ctx),
   ])
 
   if (treasureFound) {
