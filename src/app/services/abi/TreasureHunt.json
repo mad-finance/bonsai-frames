@@ -50,7 +50,7 @@
     "name": "foundClue",
     "inputs": [
       { "name": "huntId", "type": "uint256", "internalType": "uint256" },
-      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "user", "type": "uint256", "internalType": "uint256" },
       { "name": "clue", "type": "bytes32", "internalType": "bytes32" }
     ],
     "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
@@ -60,7 +60,7 @@
     "type": "function",
     "name": "foundPost",
     "inputs": [
-      { "name": "user", "type": "address", "internalType": "address" },
+      { "name": "user", "type": "uint256", "internalType": "uint256" },
       { "name": "profileId", "type": "uint256", "internalType": "uint256" },
       { "name": "pubId", "type": "uint256", "internalType": "uint256" }
     ],
