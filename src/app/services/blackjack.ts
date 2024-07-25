@@ -87,6 +87,7 @@ export const getModuleData = (action: "HIT" | "STAND", { seedOne, seedTwo, signa
   )
 }
 
+/* Backup
 export const prettifyHand = (hand: { suit: number; rank: number }[]): string => {
   const suitEmojis = ["♥️", "♦️", "♣️", "♠️"]
   const rankNames = ["NONE", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -98,4 +99,4 @@ export const prettifyHand = (hand: { suit: number; rank: number }[]): string => 
       return `${rankName}${suitEmoji}`
     })
     .join(" ")
-}
+} */
