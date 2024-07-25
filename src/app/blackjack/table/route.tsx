@@ -64,8 +64,13 @@ const handleRequest = frames(async (ctx) => {
         }}
         >
           <div tw="flex flex-col items-center">
-            <p>Approve the Blackjack contract to spend your tokens</p>
-            <p>This is required to play - no tokens will be transferred unless you lose the hand</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p tw="m-0">Approve the Blackjack contract to spend your tokens.</p>
+            <p tw="m-0">(No tokens will be transferred unless you lose the hand.)</p>
+            <p tw="m-10">This is required to play.</p>
+            <p>&nbsp;</p>
           </div>
         </div>
       ),
