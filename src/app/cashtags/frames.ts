@@ -36,33 +36,6 @@ export const frames = createFrames<State>({
   debug: !isProduction,
   initialState: {},
   imagesRoute: isProduction ? "/images" : "http://madfi.ngrok.io/cashtags/images",
-  imageRenderingOptions: async () => {
-    const [regularFont, boldFont] = await Promise.all([
-      fs.readFile(
-        path.join(path.resolve(process.cwd(), "public"), "DegularDisplay-Thin.ttf")
-      ),
-      fs.readFile(
-        path.join(path.resolve(process.cwd(), "public"), "DegularDisplay-Semibold.ttf")
-      )
-    ]);
-
-    return {
-      imageOptions: {
-        fonts: [
-          {
-            name: "Degular",
-            data: regularFont,
-            weight: 400,
-          },
-          {
-            name: "Degular",
-            data: boldFont,
-            weight: 700,
-          },
-        ]
-      }
-    };
-  },
   middleware: [
     imagesWorkerMiddleware({
       imagesRoute: isProduction ? "/images" : "http://madfi.ngrok.io/cashtags/images",

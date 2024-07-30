@@ -20,8 +20,8 @@ export const ProfileInfo = ({ image, handle, children }: ProfileInfoProps) => {
           tw="h-full w-full"
         />
       </span>
-      <div tw="flex justify-center items-center text-white mt-2 text-26" style={{ fontWeight: 400 }}>
-        $<div tw="flex" style={{ fontWeight: 700 }}>{handle.toUpperCase()}</div>
+      <div tw="flex justify-center items-center text-white mt-2 text-26" style={{ fontWeight: 700 }}>
+        ${handle.toUpperCase()}
       </div>
       {children}
     </div>
