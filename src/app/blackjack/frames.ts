@@ -10,7 +10,12 @@ import { verifyFrameSignature } from "../services/lens"
 
 export type State = {
   owner?: string
-  hand?: any
+  game?: {
+    startedAt: any
+    isOver: any
+    playerHand: any
+    dealerHand: any
+  }
   table?: {
     remainingBalance: string
     size: string

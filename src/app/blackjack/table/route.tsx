@@ -5,17 +5,34 @@ import {
   getTable,
   getTableId,
   getUserAllowance,
-  getUserHand,
-  prettifyHand,
+  getGameInfo,
+  didPlayerWin,
 } from "@/app/services/blackjack"
 import { formatUnits } from "viem"
+
+const suitEmojis = ["HE", "DI", "CL", "SP"]
+const rankNames = ["NONE", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
+
+const CardComponent = ({ card }) => {
+  const suitEmoji = suitEmojis[card.suit]
+  const rankName = rankNames[card.rank]
+  return (
+    <div
+      tw="flex w-126px h-180px mx-10px"
+      style={{
+        backgroundImage: `url(http://localhost:3000/blackjack/cards/${suitEmoji}-${rankName}.png)`,
+        backgroundSize: "100% 100%",
+      }}
+    ></div>
+  )
+}
 
 const handleRequest = frames(async (ctx) => {
   const tableId = getTableId(ctx)
   const owner = await getProfileOwner(ctx.message?.profileId)
-  const [tableData, currentHand, allowance] = await Promise.all([
+  const [tableData, gameInfo, allowance] = await Promise.all([
     getTable(tableId),
-    getUserHand(tableId, owner),
+    getGameInfo(tableId, owner),
     getUserAllowance(owner),
   ])
 
@@ -24,18 +41,63 @@ const handleRequest = frames(async (ctx) => {
     size: tableData[1].toString(),
     creator: tableData[2],
   }
-  console.log(tableId, owner, currentHand)
 
+  const game = {
+    ...gameInfo,
+    startedAt: parseInt(gameInfo.startedAt),
+  }
+
+  console.log(table, game)
+
+  const currentTimestamp = Math.floor(Date.now() / 1000)
+  const isGameExpired = game.startedAt > 0 && currentTimestamp - game.startedAt > 24 * 60 * 60
+
+  // if game timed out
+  if (isGameExpired) {
+    return {
+      image: (
+        <div
+          tw="flex w-full h-full relative items-center justify-center"
+          style={{
+            backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
+            backgroundSize: "cover",
+            fontFamily: "'Verdana', monospace",
+            fontWeight: 700,
+            color: "#FFFFFF",
+          }}
+        >
+          <div tw="flex flex-col items-center">
+            <p tw="text-4xl mb-4">Game Over</p>
+            <p tw="text-xl">This game has expired past the 24 hour time limit.</p>
+            <p tw="m-10">You will need to close out this game to start a new one.</p>
+          </div>
+        </div>
+      ),
+      buttons: [
+        <Button action="post" key="back-button" target="/start">
+          Back to Start
+        </Button>,
+        <Button action="tx" key="close-button" target="/close-tx" post_url="/play-status">
+          Close Game
+        </Button>,
+      ],
+      state: { ...ctx.state, table, game, owner },
+    }
+  }
+
+  // can't play against yourself
   if (owner?.toLowerCase() === table.creator.toLowerCase()) {
     return {
       image: (
-        <div tw="flex w-full h-full relative items-center justify-center" style={{
-          backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
-          backgroundSize: 'cover',
-          fontFamily: "'Verdana', monospace",
-          fontWeight: 700,
-          color: '#FFFFFF'
-        }}
+        <div
+          tw="flex w-full h-full relative items-center justify-center"
+          style={{
+            backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
+            backgroundSize: "cover",
+            fontFamily: "'Verdana', monospace",
+            fontWeight: 700,
+            color: "#FFFFFF",
+          }}
         >
           <div tw="flex flex-col items-center">
             <p>You cannot play against yourself</p>
@@ -47,42 +109,116 @@ const handleRequest = frames(async (ctx) => {
           Back
         </Button>,
       ],
-      state: { ...ctx.state, table, currentHand, owner },
+      state: { ...ctx.state, table, game, owner },
     }
   }
 
+  // if need to approve bonsai
   if (allowance < table.size) {
     return {
       image: (
-
-        <div tw="flex w-full h-full relative items-center justify-center" style={{
-          backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
-          backgroundSize: 'cover',
-          fontFamily: "'Verdana', monospace",
-          fontWeight: 700,
-          color: '#FFFFFF'
-        }}
+        <div
+          tw="flex w-full h-full relative items-center justify-center"
+          style={{
+            backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
+            backgroundSize: "cover",
+            fontFamily: "'Verdana', monospace",
+            fontWeight: 700,
+            color: "#FFFFFF",
+          }}
         >
           <div tw="flex flex-col items-center">
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             <p tw="m-0">Approve the Blackjack contract to spend your tokens.</p>
-            <p tw="m-0">(No tokens will be transferred unless you lose the hand.)</p>
+            <p tw="m-0">(You must deposit your bet in order to start a game.)</p>
             <p tw="m-10">This is required to play.</p>
+            <p tw="m-0">Bet size is: {formatUnits(table.size, 18)} $BONSAI</p>
             <p>&nbsp;</p>
           </div>
         </div>
       ),
       buttons: [
-        <Button action="post" key="status-button" target="/table">
+        <Button action="post" key="status-button" target="/start">
           Back
         </Button>,
         <Button action="tx" key="approve-button" target="/approve-tx" post_url="/approve-status">
           Approve $BONSAI
         </Button>,
       ],
-      state: { ...ctx.state, table, currentHand, owner },
+      state: { ...ctx.state, table, game, owner },
+    }
+  }
+
+  // if game has been won/lost
+  if (game.isOver) {
+    const playerWon = didPlayerWin(game)
+    const buttons = [
+      <Button action="tx" key="close-button" target="/close-tx" post_url="/play-status">
+        Close Game
+      </Button>,
+    ]
+
+    return {
+      image: (
+        <div
+          tw="flex w-full h-full relative"
+          style={{
+            backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg2.jpg)`,
+            backgroundSize: "cover",
+            fontFamily: "'Verdana', monospace",
+            fontWeight: 700,
+            color: "#FFFFFF",
+          }}
+        >
+          <div
+            tw="flex items-center justify-center auto-rows-auto flex-col"
+            style={{
+              fontSize: "40px",
+              fontFamily: "DegularDisplay",
+              color: "#FFFFFF",
+            }}
+          >
+            <p tw="flex w-1150px h-200px absolute top-20px left-135px" style={{ fontSize: "40px" }}>
+              {formatUnits(table.size, 18)}{" "}
+              <span tw="relative top-12px left-10px" style={{ fontSize: "30px" }}>
+                $BONSAI
+              </span>
+            </p>
+
+            <h2
+              tw="flex w-1150px h-20px absolute top-500px left-0px items-center justify-center"
+              style={{ fontSize: "20px" }}
+            >
+              Y&nbsp;O&nbsp;U&nbsp;R&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
+            </h2>
+            <div tw="flex w-1150px h-200px absolute bottom-350px left-0px items-center justify-center">
+              {game.dealerHand?.map((card, i) => (
+                <CardComponent card={card} key={i} />
+              ))}
+            </div>
+
+            <div tw="-mt-6 flex w-1150px items-center justify-center">
+              <p
+                tw={`${
+                  playerWon ? "bg-green-500" : "bg-red-500"
+                } px-6 py-3 rounded-full text-4xl font-bold`}
+              >
+                {playerWon ? "You Win! 🎉" : "You Lost :("}
+              </p>
+            </div>
+
+            <div tw="flex w-1150px h-200px absolute bottom-70px left-0px items-center justify-center">
+              {game.playerHand?.map((card, i) => (
+                <CardComponent card={card} key={i} />
+              ))}
+            </div>
+          </div>
+        </div>
+      ),
+      buttons,
+      state: { ...ctx.state, table, game, owner },
     }
   }
 
@@ -95,7 +231,7 @@ const handleRequest = frames(async (ctx) => {
     </Button>,
   ]
 
-  if (currentHand.length > 0) {
+  if (game.playerHand?.length > 0) {
     buttons.push(
       <Button action="tx" key="stand-button" target="/stand-tx" post_url="play-status">
         Stand
@@ -103,77 +239,54 @@ const handleRequest = frames(async (ctx) => {
     )
   }
 
-
-  
-  const suitEmojis = ["HE", "DI", "CL", "SP"]
-  const rankNames = ["NONE", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
-
-
   return {
     image: (
-      <div tw="flex w-full h-full relative" style={{
-        backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg2.jpg)`,
-        backgroundSize: 'cover',
-        fontFamily: "'Verdana', monospace",
-        fontWeight: 700,
-        color: '#FFFFFF'
-      }}
+      <div
+        tw="flex w-full h-full relative"
+        style={{
+          backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg2.jpg)`,
+          backgroundSize: "cover",
+          fontFamily: "'Verdana', monospace",
+          fontWeight: 700,
+          color: "#FFFFFF",
+        }}
       >
+        <div
+          tw="flex items-center justify-center auto-rows-auto flex-col"
+          style={{
+            fontSize: "40px",
+            fontFamily: "DegularDisplay",
+            color: "#FFFFFF",
+          }}
+        >
+          <p tw="flex w-1150px h-200px absolute top-20px left-135px" style={{ fontSize: "40px" }}>
+            {formatUnits(table.size, 18)}{" "}
+            <span tw="relative top-12px left-10px" style={{ fontSize: "30px" }}>
+              $BONSAI
+            </span>
+          </p>
 
-        <div tw="flex items-center justify-center auto-rows-auto flex-col" style={{
-          fontSize: '40px',
-          fontFamily: 'DegularDisplay',
-          color: '#FFFFFF'
-        }}>
-
-
-          <p tw="flex w-1150px h-200px absolute top-20px left-135px" style={{ fontSize: '40px' }}>22{formatUnits(table.remainingBalance, 18)} <span tw="relative top-12px left-10px"  style={{ fontSize: '30px' }}>$BONSAI</span></p>
-
-
-          <h2 tw="flex w-1150px h-20px absolute top-500px left-0px items-center justify-center" style={{ fontSize: '20px' }}>Y&nbsp;O&nbsp;U&nbsp;R&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D</h2>
-        <div tw="flex w-1150px h-200px absolute bottom-70px left-0px items-center justify-center">
-
-
-            {currentHand.map((card, i) => {
-              const suitEmoji = suitEmojis[card.suit]
-              const rankName = rankNames[card.rank]
-              return (
-                <div
-                  tw="flex w-140px h-201px mx-10px"
-                  key={i}
-                  style={{
-                    backgroundImage: `url(http://localhost:3000/blackjack/cards/${suitEmoji}-${rankName}.png)`,
-                    backgroundSize: "100% 100%",
-                  }}
-                ></div>
-              )
-            })} 
-
+          <h2
+            tw="flex w-1150px h-20px absolute top-500px left-0px items-center justify-center"
+            style={{ fontSize: "20px" }}
+          >
+            Y&nbsp;O&nbsp;U&nbsp;R&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
+          </h2>
+          <div tw="flex w-1150px h-200px absolute bottom-350px left-0px items-center justify-center">
+            {game.dealerHand?.map((card, i) => (
+              <CardComponent card={card} key={i} />
+            ))}
           </div>
-
-
- 
-          { /* }
-
-            <div tw="flex w-140px h-200px mx-10px" style={{
-              backgroundImage: `url(http://localhost:3000/blackjack/cards/CL-J.png)`,
-              backgroundSize: '100% 100%',
-              fontSize: '0px',
-            }}
-            ></div>
-
-
-          <h2 tw="" style={{ fontSize: '30px', display: 'block', color: 'red'}}>Allo:</h2>
-          <p tw="" style={{ fontSize: '60px'}}>{formatUnits(table.remainingBalance, 18)} $BONSAI</p>
-          
-          <h2 tw="break-after-column">Bet size: {formatUnits(table.size, 18)}</h2>
-            { */ }
-
+          <div tw="flex w-1150px h-200px absolute bottom-70px left-0px items-center justify-center">
+            {game.playerHand?.map((card, i) => (
+              <CardComponent card={card} key={i} />
+            ))}
+          </div>
         </div>
       </div>
     ),
     buttons,
-    state: { ...ctx.state, table, currentHand, owner },
+    state: { ...ctx.state, table, game, owner },
   }
 })
 
