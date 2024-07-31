@@ -38,15 +38,11 @@
   },
   {
     "type": "function",
-    "name": "bonsai",
-    "inputs": [],
-    "outputs": [{ "name": "", "type": "address", "internalType": "contract IERC20" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "claim",
-    "inputs": [{ "name": "tableId", "type": "bytes32", "internalType": "bytes32" }],
+    "name": "closeGame",
+    "inputs": [
+      { "name": "tableId", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "user", "type": "address", "internalType": "address" }
+    ],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
@@ -62,19 +58,37 @@
   },
   {
     "type": "function",
-    "name": "getHand",
+    "name": "getGameInfo",
     "inputs": [
       { "name": "tableId", "type": "bytes32", "internalType": "bytes32" },
       { "name": "user", "type": "address", "internalType": "address" }
     ],
     "outputs": [
       {
-        "name": "hand",
-        "type": "tuple[]",
-        "internalType": "struct Blackjack.Card[]",
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct Blackjack.Game",
         "components": [
-          { "name": "suit", "type": "uint8", "internalType": "enum Suit" },
-          { "name": "rank", "type": "uint8", "internalType": "enum Rank" }
+          { "name": "startedAt", "type": "uint256", "internalType": "uint256" },
+          { "name": "isOver", "type": "bool", "internalType": "bool" },
+          {
+            "name": "playerHand",
+            "type": "tuple[]",
+            "internalType": "struct Blackjack.Card[]",
+            "components": [
+              { "name": "suit", "type": "uint8", "internalType": "enum Suit" },
+              { "name": "rank", "type": "uint8", "internalType": "enum Rank" }
+            ]
+          },
+          {
+            "name": "dealerHand",
+            "type": "tuple[]",
+            "internalType": "struct Blackjack.Card[]",
+            "components": [
+              { "name": "suit", "type": "uint8", "internalType": "enum Suit" },
+              { "name": "rank", "type": "uint8", "internalType": "enum Rank" }
+            ]
+          }
         ]
       }
     ],
@@ -85,13 +99,6 @@
     "name": "getModuleMetadataURI",
     "inputs": [],
     "outputs": [{ "name": "", "type": "string", "internalType": "string" }],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "hub",
-    "inputs": [],
-    "outputs": [{ "name": "", "type": "address", "internalType": "contract ILensHub" }],
     "stateMutability": "view"
   },
   {
@@ -177,6 +184,13 @@
   },
   {
     "type": "function",
+    "name": "protocolFees",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "renounceOwnership",
     "inputs": [],
     "outputs": [],
@@ -203,9 +217,18 @@
     "outputs": [
       { "name": "remainingBalance", "type": "uint256", "internalType": "uint256" },
       { "name": "size", "type": "uint256", "internalType": "uint256" },
-      { "name": "creator", "type": "address", "internalType": "address" }
+      { "name": "creator", "type": "address", "internalType": "address" },
+      { "name": "gameCount", "type": "uint256", "internalType": "uint256" },
+      { "name": "paused", "type": "uint256", "internalType": "uint256" }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "togglePaused",
+    "inputs": [{ "name": "tableId", "type": "bytes32", "internalType": "bytes32" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -232,20 +255,34 @@
     "stateMutability": "view"
   },
   {
+    "type": "function",
+    "name": "withdraw",
+    "inputs": [{ "name": "tableId", "type": "bytes32", "internalType": "bytes32" }],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "withdrawProtocolFees",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
     "type": "event",
-    "name": "Claimed",
+    "name": "GameClosed",
     "inputs": [
+      { "name": "player", "type": "address", "indexed": false, "internalType": "address" },
       { "name": "tableId", "type": "bytes32", "indexed": false, "internalType": "bytes32" },
-      { "name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256" }
+      { "name": "won", "type": "bool", "indexed": false, "internalType": "bool" }
     ],
     "anonymous": false
   },
   {
     "type": "event",
-    "name": "DealerWins",
+    "name": "GameStarted",
     "inputs": [
       { "name": "player", "type": "address", "indexed": false, "internalType": "address" },
-      { "name": "creator", "type": "address", "indexed": false, "internalType": "address" },
       { "name": "tableId", "type": "bytes32", "indexed": false, "internalType": "bytes32" }
     ],
     "anonymous": false
@@ -261,11 +298,9 @@
   },
   {
     "type": "event",
-    "name": "PlayerWins",
+    "name": "ProtocolFeesWithdrawn",
     "inputs": [
-      { "name": "player", "type": "address", "indexed": false, "internalType": "address" },
-      { "name": "creator", "type": "address", "indexed": false, "internalType": "address" },
-      { "name": "tableId", "type": "bytes32", "indexed": false, "internalType": "bytes32" }
+      { "name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256" }
     ],
     "anonymous": false
   },
@@ -287,6 +322,15 @@
   },
   {
     "type": "event",
+    "name": "ToggleTablePaused",
+    "inputs": [
+      { "name": "tableId", "type": "bytes32", "indexed": false, "internalType": "bytes32" },
+      { "name": "paused", "type": "bool", "indexed": false, "internalType": "bool" }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "TopUp",
     "inputs": [
       { "name": "tableId", "type": "bytes32", "indexed": false, "internalType": "bytes32" },
@@ -294,15 +338,29 @@
     ],
     "anonymous": false
   },
-  { "type": "error", "name": "InsufficientAllowance", "inputs": [] },
+  {
+    "type": "event",
+    "name": "Withdrawn",
+    "inputs": [
+      { "name": "tableId", "type": "bytes32", "indexed": false, "internalType": "bytes32" },
+      { "name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256" }
+    ],
+    "anonymous": false
+  },
+  { "type": "error", "name": "GameNotOver", "inputs": [] },
+  { "type": "error", "name": "GameOver", "inputs": [] },
   {
     "type": "error",
     "name": "InvalidAction",
     "inputs": [{ "name": "action", "type": "uint8", "internalType": "enum Action" }]
   },
   { "type": "error", "name": "InvalidSignature", "inputs": [] },
-  { "type": "error", "name": "LowPlayerBalance", "inputs": [] },
-  { "type": "error", "name": "LowTableBalance", "inputs": [] },
+  { "type": "error", "name": "NoActiveGame", "inputs": [] },
+  { "type": "error", "name": "NoBalance", "inputs": [] },
   { "type": "error", "name": "NotCreator", "inputs": [] },
-  { "type": "error", "name": "NotHub", "inputs": [] }
+  { "type": "error", "name": "NotHub", "inputs": [] },
+  { "type": "error", "name": "TableIsNotPaused", "inputs": [] },
+  { "type": "error", "name": "TableIsPaused", "inputs": [] },
+  { "type": "error", "name": "TooEarly", "inputs": [] },
+  { "type": "error", "name": "TooManyGames", "inputs": [] }
 ]

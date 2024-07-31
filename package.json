@@ -13,6 +13,7 @@
     "@lens-protocol/client": "^2.3.0",
     "@vercel/og": "^0.6.2",
     "@xmtp/frames-validator": "^0.6.1",
+    "axios": "^1.7.2",
     "frames.js": "^0.17.0",
     "next": "14.2.4",
     "react": "^18",
