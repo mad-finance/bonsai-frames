@@ -40,6 +40,8 @@ const handleRequest = frames(async (ctx) => {
     remainingBalance: tableData[0].toString(),
     size: tableData[1].toString(),
     creator: tableData[2],
+    gameCount: parseInt(tableData[3]),
+    pausedAt: parseInt(tableData[4]),
   }
 
   const game = {
@@ -48,6 +50,43 @@ const handleRequest = frames(async (ctx) => {
   }
 
   console.log(table, game)
+
+  // if game started and can't start a new one
+  if (
+    game.startedAt === 0 &&
+    (table.pausedAt !== 0 || table.gameCount >= table.remainingBalance / table.size)
+  ) {
+    return {
+      image: (
+        <div
+          tw="flex w-full h-full relative items-center justify-center"
+          style={{
+            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
+            backgroundSize: "cover",
+            fontFamily: "'Verdana', monospace",
+            fontWeight: 700,
+            color: "#FFFFFF",
+          }}
+        >
+          <div tw="flex flex-col items-center">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p tw="m-10">Error</p>
+            <p tw="m-4">Unable to start a game right now.</p>
+            <p tw="m-0">The table may be paused or there may be</p>
+            <p tw="m-0">too many open games right now.</p>
+            <p>&nbsp;</p>
+          </div>
+        </div>
+      ),
+      buttons: [
+        <Button action="post" key="back-button" target="/start">
+          Back to Start
+        </Button>,
+      ],
+      state: { ...ctx.state, table, game, owner },
+    }
+  }
 
   const currentTimestamp = Math.floor(Date.now() / 1000)
   const isGameExpired = game.startedAt > 0 && currentTimestamp - game.startedAt > 24 * 60 * 60

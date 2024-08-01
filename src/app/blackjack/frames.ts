@@ -18,6 +18,8 @@ export type State = {
     remainingBalance: string
     size: string
     creator: string
+    gameCount: number
+    pausedAt: number
   }
   dealerProfile?: {
     image?: string
