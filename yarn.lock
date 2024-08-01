@@ -2983,10 +2983,10 @@ form-data@^4.0.0:
     combined-stream "^1.0.8"
     mime-types "^2.1.12"
 
-frames.js@^0.17.0:
-  version "0.17.5"
-  resolved "https://registry.yarnpkg.com/frames.js/-/frames.js-0.17.5.tgz#31149e91034598e011ca94146ababd5417b0a831"
-  integrity sha512-Xmyu0RKykX+47wVaGVgyVbIldnCbFiaj+NB3nqvu8u9yZn0UnhwqaXNk2yZMmOkM7KYklHRUprUJzPaG+7d6Lw==
+frames.js@^0.18.1:
+  version "0.18.1"
+  resolved "https://registry.yarnpkg.com/frames.js/-/frames.js-0.18.1.tgz#35db68fa482242c9d2724940b4301da029e3abfd"
+  integrity sha512-4IFisYMLnu7Adogp6jZSgQF6OtJSA6nmIHUS2Vb4eMqusM3EwqrRQSneW5gU2S6D4UP9UTHWVFqUNOnRtkKusg==
   dependencies:
     "@vercel/og" "^0.6.2"
     cheerio "^1.0.0-rc.12"

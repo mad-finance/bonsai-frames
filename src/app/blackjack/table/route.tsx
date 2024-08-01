@@ -10,17 +10,17 @@ import {
 } from "@/app/services/blackjack"
 import { formatUnits } from "viem"
 
-const suitEmojis = ["HE", "DI", "CL", "SP"]
+const suits = ["HE", "DI", "CL", "SP"]
 const rankNames = ["NONE", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
 
 const CardComponent = ({ card }) => {
-  const suitEmoji = suitEmojis[card.suit]
+  const suit = suits[card.suit]
   const rankName = rankNames[card.rank]
   return (
     <div
-      tw="flex w-126px h-180px mx-10px"
+      tw="flex w-140px h-200px mx-10px"
       style={{
-        backgroundImage: `url(${baseUrl}/blackjack/cards/${suitEmoji}-${rankName}.png)`,
+        backgroundImage: `url(${baseUrl}/blackjack/cards/${suit}-${rankName}.png)`,
         backgroundSize: "100% 100%",
       }}
     ></div>
@@ -48,8 +48,6 @@ const handleRequest = frames(async (ctx) => {
     ...gameInfo,
     startedAt: parseInt(gameInfo.startedAt),
   }
-
-  console.log(table, game)
 
   // if game started and can't start a new one
   if (
@@ -153,7 +151,7 @@ const handleRequest = frames(async (ctx) => {
   }
 
   // if need to approve bonsai
-  if (allowance < table.size) {
+  if (allowance < table.size && game.playerHand?.length === 0) {
     return {
       image: (
         <div
@@ -227,31 +225,37 @@ const handleRequest = frames(async (ctx) => {
             </p>
 
             <h2
+              tw="flex w-1150px h-20px absolute -top-10px left-0px items-center justify-center"
+              style={{ fontSize: "20px" }}
+            >
+              D&nbsp;E&nbsp;A&nbsp;L&nbsp;E&nbsp;R&nbsp;&apos;&nbsp;S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
+            </h2>
+            <h2
               tw="flex w-1150px h-20px absolute top-500px left-0px items-center justify-center"
               style={{ fontSize: "20px" }}
             >
               Y&nbsp;O&nbsp;U&nbsp;R&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
             </h2>
-            <div tw="flex w-1150px h-200px absolute bottom-350px left-0px items-center justify-center">
+
+            <div tw="flex w-1150px h-200px absolute bottom-320px left-0px items-center justify-center">
               {game.dealerHand?.map((card, i) => (
                 <CardComponent card={card} key={i} />
               ))}
             </div>
-
-            <div tw="-mt-6 flex w-1150px items-center justify-center">
-              <p
-                tw={`${
-                  playerWon ? "bg-green-500" : "bg-red-500"
-                } px-6 py-3 rounded-full text-4xl font-bold`}
-              >
-                {playerWon ? "You Win! 🎉" : "You Lost :("}
-              </p>
-            </div>
-
             <div tw="flex w-1150px h-200px absolute bottom-70px left-0px items-center justify-center">
               {game.playerHand?.map((card, i) => (
                 <CardComponent card={card} key={i} />
               ))}
+            </div>
+
+            <div tw="flex w-1150px items-center justify-center">
+              <p
+                tw={`${
+                  playerWon ? "bg-green-500" : "bg-red-500"
+                } px-10 py-6 rounded-full text-4xl font-bold`}
+              >
+                {playerWon ? "You Win! 🎉" : "You Lost :("}
+              </p>
             </div>
           </div>
         </div>
@@ -266,7 +270,7 @@ const handleRequest = frames(async (ctx) => {
       Refresh
     </Button>,
     <Button action="tx" key="hit-button" target="/hit-tx" post_url="play-status">
-      Hit
+      {game.playerHand?.length === 0 ? "Deal First Hand" : "Hit"}
     </Button>,
   ]
 
@@ -306,12 +310,19 @@ const handleRequest = frames(async (ctx) => {
           </p>
 
           <h2
+            tw="flex w-1150px h-20px absolute -top-10px left-0px items-center justify-center"
+            style={{ fontSize: "20px" }}
+          >
+            D&nbsp;E&nbsp;A&nbsp;L&nbsp;E&nbsp;R&nbsp;&apos;&nbsp;S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
+          </h2>
+          <h2
             tw="flex w-1150px h-20px absolute top-500px left-0px items-center justify-center"
             style={{ fontSize: "20px" }}
           >
             Y&nbsp;O&nbsp;U&nbsp;R&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
           </h2>
-          <div tw="flex w-1150px h-200px absolute bottom-350px left-0px items-center justify-center">
+
+          <div tw="flex w-1150px h-200px absolute bottom-320px left-0px items-center justify-center">
             {game.dealerHand?.map((card, i) => (
               <CardComponent card={card} key={i} />
             ))}

@@ -28,16 +28,6 @@ export const POST = frames(async (ctx) => {
     ],
   })
 
-  console.log({
-    publicationActedProfileId: pubParts[0],
-    publicationActedId: pubParts[1],
-    actorProfileId: ctx.message?.profileId,
-    referrerProfileIds: [],
-    referrerPubIds: [],
-    actionModuleAddress: BLACKJACK_ADDRESS,
-    actionModuleData: moduleData,
-  })
-
   return transaction({
     chainId: "eip155:137",
     method: "eth_sendTransaction",

@@ -1,20 +1,16 @@
 /* eslint-disable react/jsx-key */
 import { Button } from "frames.js/next"
-import { frames } from "../frames"
+import { baseUrl, frames } from "../frames"
 import { publicClient } from "@/app/services/moneyClubs"
 import { polygonScanUrl } from "@/app/services/utils"
 
 export const POST = frames(async (ctx) => {
   const currentState = ctx.state
-  const transactionId = ctx.message?.transactionId || currentState.transactionId
+  const transactionId = ctx.message?.actionResponse || currentState.transactionId
 
-  const [transaction] = await Promise.all([
-    (async () => {
-      if (!!transactionId) {
-        return await publicClient.getTransaction({ hash: transactionId! as `0x${string}` })
-      }
-    })(),
-  ])
+  const transaction = await publicClient.getTransactionReceipt({
+    hash: transactionId! as `0x${string}`,
+  })
 
   const buttons: any[] = []
   const txPending = !transaction?.blockHash
@@ -29,24 +25,33 @@ export const POST = frames(async (ctx) => {
   if (txPending) {
     buttons.push(
       <Button action="post" target="/approve-status">
-        Refresh
-      </Button>
-    )
-  } else {
-    buttons.push(
-      <Button action="post" target="/table">
-        Return to Table
+        Refresh Status
       </Button>
     )
   }
+  buttons.push(
+    <Button action="post" target="/table">
+      Return to Table
+    </Button>
+  )
 
   const updatedState = { ...currentState, transactionId }
 
   return {
     image: (
-      <div tw="flex w-full h-full items-center justify-center">
+      <div
+        tw="flex w-full h-full relative items-center justify-center"
+        style={{
+          backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
+          backgroundSize: "cover",
+          fontFamily: "'Verdana', monospace",
+          fontWeight: 700,
+          color: "#FFFFFF",
+        }}
+      >
         <div tw="flex flex-col items-center">
-          <p>Tx pending</p>
+          <p>&nbsp;</p>
+          <p tw="m-10">{txPending ? "Transaction Pending..." : "Transaction Complete!"}</p>
         </div>
       </div>
     ),

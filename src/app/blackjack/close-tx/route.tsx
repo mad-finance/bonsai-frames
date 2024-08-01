@@ -2,7 +2,7 @@ import LensHubAbi from "../../services/abi/LensHub.json"
 import { frames } from "../frames"
 import { transaction } from "frames.js/core"
 import { Abi, encodeFunctionData } from "viem"
-import { BLACKJACK_ADDRESS, getModuleData, getSignedRNG } from "@/app/services/blackjack"
+import { BLACKJACK_ADDRESS, getModuleData } from "@/app/services/blackjack"
 import { LENS_HUB_ADDRESS } from "@/app/services/treasureHunt"
 
 export const POST = frames(async (ctx) => {

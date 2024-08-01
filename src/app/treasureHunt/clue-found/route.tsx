@@ -3,7 +3,7 @@ import { clueFoundImg, clueNotFoundImg, frames, treasureImg } from "../frames"
 import { ctxToFound, ctxToTreasureFound } from "@/app/services/treasureHunt"
 
 const handleRequest = frames(async (ctx) => {
-  const transactionId = ctx.message?.transactionId || ctx.state?.transactionId
+  const transactionId = ctx.message?.actionResponse || ctx.state?.transactionId
   let [found, treasureFound] = await Promise.all([ctxToFound(ctx), ctxToTreasureFound(ctx)])
 
   let buttons = [

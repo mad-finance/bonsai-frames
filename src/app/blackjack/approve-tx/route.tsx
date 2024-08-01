@@ -1,6 +1,6 @@
 import { frames } from "../frames"
 import { transaction } from "frames.js/core"
-import { encodeFunctionData, erc20Abi, maxUint256, parseEther } from "viem"
+import { encodeFunctionData, erc20Abi } from "viem"
 import { BONSAI_TOKEN_ADDRESS } from "@/app/services/utils"
 import { BLACKJACK_ADDRESS } from "@/app/services/blackjack"
 
