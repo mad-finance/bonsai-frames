@@ -1,5 +1,5 @@
 import { Button } from "frames.js/next"
-import { frames } from "../frames"
+import { baseUrl, frames } from "../frames"
 
 const handleRequest = frames(async () => {
   return {
@@ -7,7 +7,7 @@ const handleRequest = frames(async () => {
       <div
         tw="flex w-full h-full items-center justify-center"
         style={{
-          backgroundImage: `url(http://localhost:3000/blackjack/blackjack-start-bg.jpg)`,
+          backgroundImage: `url(${baseUrl}/blackjack/blackjack-start-bg.jpg)`,
           backgroundSize: "cover",
         }}
       ></div>

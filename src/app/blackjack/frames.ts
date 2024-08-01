@@ -27,9 +27,10 @@ export type State = {
 }
 
 const isProduction = process.env.NODE_ENV === "production"
+export const baseUrl = isProduction ? "https://frames.bonsai.meme" : "http://localhost:3000"
 
 export const frames = createFrames<State>({
-  baseUrl: isProduction ? "https://frames.bonsai.meme" : "http://localhost:3000",
+  baseUrl,
   basePath: "/blackjack",
   debug: !isProduction,
   initialState: {},

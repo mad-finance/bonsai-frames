@@ -1,5 +1,5 @@
 import { Button } from "frames.js/next"
-import { frames } from "../frames"
+import { baseUrl, frames } from "../frames"
 import { getProfileOwner } from "@/app/services/treasureHunt"
 import {
   getTable,
@@ -20,7 +20,7 @@ const CardComponent = ({ card }) => {
     <div
       tw="flex w-126px h-180px mx-10px"
       style={{
-        backgroundImage: `url(http://localhost:3000/blackjack/cards/${suitEmoji}-${rankName}.png)`,
+        backgroundImage: `url(${baseUrl}/blackjack/cards/${suitEmoji}-${rankName}.png)`,
         backgroundSize: "100% 100%",
       }}
     ></div>
@@ -59,7 +59,7 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative items-center justify-center"
           style={{
-            backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
+            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -92,7 +92,7 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative items-center justify-center"
           style={{
-            backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
+            backgroundImage: `url(${baseUrl}}/blackjack/blackjack-table-bg.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -120,7 +120,7 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative items-center justify-center"
           style={{
-            backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
+            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -165,7 +165,7 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative"
           style={{
-            backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg2.jpg)`,
+            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg2.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -244,7 +244,7 @@ const handleRequest = frames(async (ctx) => {
       <div
         tw="flex w-full h-full relative"
         style={{
-          backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg2.jpg)`,
+          backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg2.jpg)`,
           backgroundSize: "cover",
           fontFamily: "'Verdana', monospace",
           fontWeight: 700,

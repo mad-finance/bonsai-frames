@@ -1,5 +1,5 @@
 import { Button } from "frames.js/next"
-import { frames } from "../frames"
+import { baseUrl, frames } from "../frames"
 import { BLACKJACK_ADDRESS } from "@/app/services/blackjack"
 
 const handleRequest = frames(async () => {
@@ -8,7 +8,7 @@ const handleRequest = frames(async () => {
       <div
         tw="flex w-full h-full relative items-center justify-center"
         style={{
-          backgroundImage: `url(http://localhost:3000/blackjack/blackjack-table-bg.jpg)`,
+          backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
           backgroundSize: "cover",
           fontFamily: "'Verdana', monospace",
           fontWeight: 700,
