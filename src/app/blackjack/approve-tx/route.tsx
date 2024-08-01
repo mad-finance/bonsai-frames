@@ -7,6 +7,8 @@ import { BLACKJACK_ADDRESS } from "@/app/services/blackjack"
 export const POST = frames(async (ctx) => {
   if (!ctx.state.table?.size) throw new Error("No size")
 
+    console.log("TX", ctx.message)
+
   const amount = BigInt(ctx.state.table.size)
 
   const calldata = encodeFunctionData({
