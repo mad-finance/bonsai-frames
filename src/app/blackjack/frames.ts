@@ -4,8 +4,6 @@ import { getLensFrameMessage, isLensFrameActionPayload } from "frames.js/lens"
 import { imagesWorkerMiddleware } from "frames.js/middleware/images-worker"
 import { getXmtpFrameMessage, isXmtpFrameActionPayload } from "frames.js/xmtp"
 import { farcasterHubContext } from "frames.js/middleware"
-import * as fs from "node:fs/promises"
-import * as path from "node:path"
 import { verifyFrameSignature } from "../services/lens"
 
 export type State = {
@@ -30,39 +28,12 @@ export type State = {
 
 const isProduction = process.env.NODE_ENV === "production"
 
-export const FEATURED_DEALER_PROFILE_ID = "0x73b1"
-export const FEATURED_REMAINING_BAL = "10000000000000000000000" // 10,000
-export const FEATURED_BET_SIZE = "1000000000000000000000" // 1,000
-
 export const frames = createFrames<State>({
   baseUrl: isProduction ? "https://frames.bonsai.meme" : "http://localhost:3000",
   basePath: "/blackjack",
   debug: !isProduction,
   initialState: {},
   imagesRoute: "/images",
-  imageRenderingOptions: async () => {
-    const [regularFont, boldFont] = await Promise.all([
-      fs.readFile(path.join(path.resolve(process.cwd(), "public"), "DegularDisplay-Thin.ttf")),
-      fs.readFile(path.join(path.resolve(process.cwd(), "public"), "DegularDisplay-Semibold.ttf")),
-    ])
-
-    return {
-      imageOptions: {
-        fonts: [
-          {
-            name: "Degular",
-            data: regularFont,
-            weight: 400,
-          },
-          {
-            name: "Degular",
-            data: boldFont,
-            weight: 700,
-          },
-        ],
-      },
-    }
-  },
   middleware: [
     imagesWorkerMiddleware({
       imagesRoute: "/images",
