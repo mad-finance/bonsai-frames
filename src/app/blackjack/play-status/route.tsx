@@ -40,18 +40,21 @@ export const POST = frames(async (ctx) => {
       <div
         tw="flex w-full h-full relative items-center justify-center"
         style={{
-          backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
+          backgroundImage: `url(${baseUrl}/blackjack/` + (txPending ? "blackjack-table-pending.gif" : "blackjack-table-transaction-complete.jpg") + `)`,
           backgroundSize: "cover",
           fontFamily: "'Verdana', monospace",
           fontWeight: 700,
           color: "#FFFFFF",
         }}
       >
+      { /* 
         <div tw="flex flex-col items-center">
           <p>&nbsp;</p>
           <p tw="m-10">{txPending ? "Transaction Pending..." : "Transaction Complete!"}</p>
         </div>
-      </div>
+      */ }
+      
+        </div>
     ),
     buttons,
     state: { ...currentState, transactionId },

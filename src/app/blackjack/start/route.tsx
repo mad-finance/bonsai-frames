@@ -7,7 +7,7 @@ const handleRequest = frames(async () => {
       <div
         tw="flex w-full h-full items-center justify-center"
         style={{
-          backgroundImage: `url(${baseUrl}/blackjack/blackjack-start-bg.jpg)`,
+          backgroundImage: `url(${baseUrl}/blackjack/blackjack-start.jpg)`,
           backgroundSize: "cover",
         }}
       ></div>

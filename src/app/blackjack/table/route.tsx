@@ -18,7 +18,7 @@ const CardComponent = ({ card }) => {
   const rankName = rankNames[card.rank]
   return (
     <div
-      tw="flex w-140px h-200px mx-10px"
+      tw="flex w-120px h-175px mx-10px"
       style={{
         backgroundImage: `url(${baseUrl}/blackjack/cards/${suit}-${rankName}.png)`,
         backgroundSize: "100% 100%",
@@ -59,7 +59,7 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative items-center justify-center"
           style={{
-            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
+            backgroundImage: `url(${baseUrl}/blackjack/blackjack-default.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -96,7 +96,7 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative items-center justify-center"
           style={{
-            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
+            backgroundImage: `url(${baseUrl}/blackjack/blackjack-default.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -129,7 +129,7 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative items-center justify-center"
           style={{
-            backgroundImage: `url(${baseUrl}}/blackjack/blackjack-table-bg.jpg)`,
+            backgroundImage: `url(${baseUrl}}/blackjack/blackjack-default.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -157,13 +157,22 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative items-center justify-center"
           style={{
-            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg.jpg)`,
+            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-approve.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
             color: "#FFFFFF",
           }}
         >
+          <p tw="m-0 w-400px h-20px absolute bottom-135px left-280px items-left" style={{
+            fontFamily: "'Verdana', monospace",
+            fontWeight: 700,
+            fontSize: "50px",
+            color: "red",
+          }}>{formatUnits(table.size, 18)} $BONSAI</p>
+
+
+          { /* 
           <div tw="flex flex-col items-center">
             <p>&nbsp;</p>
             <p>&nbsp;</p>
@@ -174,6 +183,7 @@ const handleRequest = frames(async (ctx) => {
             <p tw="m-0">Bet size is: {formatUnits(table.size, 18)} $BONSAI</p>
             <p>&nbsp;</p>
           </div>
+            */ }
         </div>
       ),
       buttons: [
@@ -197,12 +207,13 @@ const handleRequest = frames(async (ctx) => {
       </Button>,
     ]
 
+
     return {
       image: (
         <div
           tw="flex w-full h-full relative"
           style={{
-            backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg2.jpg)`,
+            backgroundImage: `url(${baseUrl}/blackjack/${playerWon ? "blackjack-table-won.jpg" : "blackjack-table-lost.jpg"})`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -217,37 +228,26 @@ const handleRequest = frames(async (ctx) => {
               color: "#FFFFFF",
             }}
           >
-            <p tw="flex w-1150px h-200px absolute top-20px left-135px" style={{ fontSize: "40px" }}>
+            <p tw="flex w-1150px h-200px absolute top-10px left-115px" style={{ fontSize: "45px" }}>
               {formatUnits(table.size, 18)}{" "}
-              <span tw="relative top-12px left-10px" style={{ fontSize: "30px" }}>
+              <span tw="relative top-16px left-10px" style={{ fontSize: "30px" }}>
                 $BONSAI
               </span>
             </p>
 
-            <h2
-              tw="flex w-1150px h-20px absolute -top-10px left-0px items-center justify-center"
-              style={{ fontSize: "20px" }}
-            >
-              D&nbsp;E&nbsp;A&nbsp;L&nbsp;E&nbsp;R&nbsp;&apos;&nbsp;S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
-            </h2>
-            <h2
-              tw="flex w-1150px h-20px absolute top-500px left-0px items-center justify-center"
-              style={{ fontSize: "20px" }}
-            >
-              Y&nbsp;O&nbsp;U&nbsp;R&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
-            </h2>
-
-            <div tw="flex w-1150px h-200px absolute bottom-320px left-0px items-center justify-center">
+            <div tw="flex w-1150px h-200px absolute bottom-340px left-0px items-center justify-center">
               {game.dealerHand?.map((card, i) => (
                 <CardComponent card={card} key={i} />
               ))}
             </div>
-            <div tw="flex w-1150px h-200px absolute bottom-70px left-0px items-center justify-center">
+            <div tw="flex w-1150px h-200px absolute bottom-60px left-0px items-center justify-center">
               {game.playerHand?.map((card, i) => (
                 <CardComponent card={card} key={i} />
               ))}
             </div>
+            
 
+            { /*
             <div tw="flex w-1150px items-center justify-center">
               <p
                 tw={`${
@@ -257,6 +257,8 @@ const handleRequest = frames(async (ctx) => {
                 {playerWon ? "You Win! 🎉" : "You Lost :("}
               </p>
             </div>
+            */ }
+
           </div>
         </div>
       ),
@@ -287,7 +289,7 @@ const handleRequest = frames(async (ctx) => {
       <div
         tw="flex w-full h-full relative"
         style={{
-          backgroundImage: `url(${baseUrl}/blackjack/blackjack-table-bg2.jpg)`,
+          backgroundImage: `url(${baseUrl}/blackjack/${game.playerHand?.length === 0 ? "blackjack-table-empty.jpg" : "blackjack-table-active-game.jpg"})`,
           backgroundSize: "cover",
           fontFamily: "'Verdana', monospace",
           fontWeight: 700,
@@ -302,32 +304,20 @@ const handleRequest = frames(async (ctx) => {
             color: "#FFFFFF",
           }}
         >
-          <p tw="flex w-1150px h-200px absolute top-20px left-135px" style={{ fontSize: "40px" }}>
+          <p tw="flex w-1150px h-200px absolute top-10px left-115px" style={{ fontSize: "45px" }}>
             {formatUnits(table.size, 18)}{" "}
-            <span tw="relative top-12px left-10px" style={{ fontSize: "30px" }}>
+            <span tw="relative top-16px left-10px" style={{ fontSize: "30px" }}>
               $BONSAI
             </span>
           </p>
 
-          <h2
-            tw="flex w-1150px h-20px absolute -top-10px left-0px items-center justify-center"
-            style={{ fontSize: "20px" }}
-          >
-            D&nbsp;E&nbsp;A&nbsp;L&nbsp;E&nbsp;R&nbsp;&apos;&nbsp;S&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
-          </h2>
-          <h2
-            tw="flex w-1150px h-20px absolute top-500px left-0px items-center justify-center"
-            style={{ fontSize: "20px" }}
-          >
-            Y&nbsp;O&nbsp;U&nbsp;R&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H&nbsp;A&nbsp;N&nbsp;D
-          </h2>
 
-          <div tw="flex w-1150px h-200px absolute bottom-320px left-0px items-center justify-center">
+          <div tw="flex w-1150px h-200px absolute bottom-325px left-0px items-center justify-center">
             {game.dealerHand?.map((card, i) => (
               <CardComponent card={card} key={i} />
             ))}
           </div>
-          <div tw="flex w-1150px h-200px absolute bottom-70px left-0px items-center justify-center">
+          <div tw="flex w-1150px h-200px absolute bottom-75px left-0px items-center justify-center">
             {game.playerHand?.map((card, i) => (
               <CardComponent card={card} key={i} />
             ))}
