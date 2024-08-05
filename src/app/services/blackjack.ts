@@ -155,7 +155,7 @@ export const didPlayerWin = (game: Game): boolean => {
 
   if (playerValue > 21) return false // Player busts
   if (dealerValue > 21) return true // Dealer busts
-  return playerValue > dealerValue // Compare values
+  return playerValue >= dealerValue // Compare values
 }
 
 /* Backup
