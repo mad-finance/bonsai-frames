@@ -8,6 +8,8 @@ export const POST = frames(async (ctx) => {
   const currentState = ctx.state
   const transactionId = ctx.message?.actionResponse || currentState.transactionId
 
+  console.log(ctx.state, ctx.message)
+
   const transaction = await publicClient.getTransactionReceipt({
     hash: transactionId! as `0x${string}`,
   })
