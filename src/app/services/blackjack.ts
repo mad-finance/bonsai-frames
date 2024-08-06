@@ -5,7 +5,7 @@ import { BONSAI_TOKEN_ADDRESS } from "./utils"
 import { privateKeyToAccount } from "viem/accounts"
 import axios from "axios"
 
-export const BLACKJACK_ADDRESS = "0xD2339EB553c5855D4bDFD9C110430EB722B86FfF"
+export const BLACKJACK_ADDRESS = "0x03782Fa409Df0Ec0262915878C3eEFD5292b2FC4"
 
 const { PRIVATE_KEY } = process.env
 const adminAccount = privateKeyToAccount(`0x${PRIVATE_KEY}`) // from madfiprotocol.eth

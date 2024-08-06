@@ -203,8 +203,8 @@ const handleRequest = frames(async (ctx) => {
   }
 
   // if game has been won/lost
-  const playerWon = didPlayerWin(game)
-  if (game.isOver || playerWon) {
+  if (game.isOver) {
+    const playerWon = didPlayerWin(game)
     const buttons = [
       <Button action="tx" key="close-button" target="/close-tx" post_url="/play-status">
         Close Game
