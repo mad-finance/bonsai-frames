@@ -164,15 +164,19 @@ const handleRequest = frames(async (ctx) => {
             color: "#FFFFFF",
           }}
         >
-          <p tw="m-0 w-400px h-20px absolute bottom-135px left-280px items-left" style={{
-            fontFamily: "'Verdana', monospace",
-            fontWeight: 700,
-            fontSize: "50px",
-            color: "red",
-          }}>{formatUnits(table.size, 18)} $BONSAI</p>
+          <p
+            tw="m-0 w-400px h-20px absolute bottom-135px left-280px items-left"
+            style={{
+              fontFamily: "'Verdana', monospace",
+              fontWeight: 700,
+              fontSize: "50px",
+              color: "red",
+            }}
+          >
+            {formatUnits(table.size, 18)} $BONSAI
+          </p>
 
-
-          { /* 
+          {/* 
           <div tw="flex flex-col items-center">
             <p>&nbsp;</p>
             <p>&nbsp;</p>
@@ -183,7 +187,7 @@ const handleRequest = frames(async (ctx) => {
             <p tw="m-0">Bet size is: {formatUnits(table.size, 18)} $BONSAI</p>
             <p>&nbsp;</p>
           </div>
-            */ }
+            */}
         </div>
       ),
       buttons: [
@@ -199,21 +203,22 @@ const handleRequest = frames(async (ctx) => {
   }
 
   // if game has been won/lost
-  if (game.isOver) {
-    const playerWon = didPlayerWin(game)
+  const playerWon = didPlayerWin(game)
+  if (game.isOver || playerWon) {
     const buttons = [
       <Button action="tx" key="close-button" target="/close-tx" post_url="/play-status">
         Close Game
       </Button>,
     ]
 
-
     return {
       image: (
         <div
           tw="flex w-full h-full relative"
           style={{
-            backgroundImage: `url(${baseUrl}/blackjack/${playerWon ? "blackjack-table-won.jpg" : "blackjack-table-lost.jpg"})`,
+            backgroundImage: `url(${baseUrl}/blackjack/${
+              playerWon ? "blackjack-table-won.jpg" : "blackjack-table-lost.jpg"
+            })`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
@@ -245,9 +250,8 @@ const handleRequest = frames(async (ctx) => {
                 <CardComponent card={card} key={i} />
               ))}
             </div>
-            
 
-            { /*
+            {/*
             <div tw="flex w-1150px items-center justify-center">
               <p
                 tw={`${
@@ -257,8 +261,7 @@ const handleRequest = frames(async (ctx) => {
                 {playerWon ? "You Win! 🎉" : "You Lost :("}
               </p>
             </div>
-            */ }
-
+            */}
           </div>
         </div>
       ),
@@ -289,7 +292,11 @@ const handleRequest = frames(async (ctx) => {
       <div
         tw="flex w-full h-full relative"
         style={{
-          backgroundImage: `url(${baseUrl}/blackjack/${game.playerHand?.length === 0 ? "blackjack-table-empty.jpg" : "blackjack-table-active-game.jpg"})`,
+          backgroundImage: `url(${baseUrl}/blackjack/${
+            game.playerHand?.length === 0
+              ? "blackjack-table-empty.jpg"
+              : "blackjack-table-active-game.jpg"
+          })`,
           backgroundSize: "cover",
           fontFamily: "'Verdana', monospace",
           fontWeight: 700,
@@ -310,7 +317,6 @@ const handleRequest = frames(async (ctx) => {
               $BONSAI
             </span>
           </p>
-
 
           <div tw="flex w-1150px h-200px absolute bottom-325px left-0px items-center justify-center">
             {game.dealerHand?.map((card, i) => (
