@@ -298,6 +298,16 @@
   },
   {
     "type": "event",
+    "name": "PostInitialized",
+    "inputs": [
+      { "name": "profileId", "type": "uint256", "indexed": false, "internalType": "uint256" },
+      { "name": "pubId", "type": "uint256", "indexed": false, "internalType": "uint256" },
+      { "name": "tableId", "type": "bytes32", "indexed": false, "internalType": "bytes32" }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "ProtocolFeesWithdrawn",
     "inputs": [
       { "name": "amount", "type": "uint256", "indexed": false, "internalType": "uint256" }
