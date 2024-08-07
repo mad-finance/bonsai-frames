@@ -49,34 +49,23 @@ const handleRequest = frames(async (ctx) => {
     startedAt: parseInt(gameInfo.startedAt),
   }
 
-  // if game started and can't start a new one
-  if (
-    game.startedAt === 0 &&
-    (table.pausedAt !== 0 || table.gameCount >= table.remainingBalance / table.size)
-  ) {
+  // if table paused and can't start a new one
+  if (game.startedAt === 0 && table.pausedAt !== 0) {
     return {
-      image: (
-        <div
-          tw="flex w-full h-full relative items-center justify-center"
-          style={{
-            backgroundImage: `url(${baseUrl}/blackjack/blackjack-default.jpg)`,
-            backgroundSize: "cover",
-            fontFamily: "'Verdana', monospace",
-            fontWeight: 700,
-            color: "#FFFFFF",
-          }}
-        >
-          <div tw="flex flex-col items-center">
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p tw="m-10">Error</p>
-            <p tw="m-4">Unable to start a game right now.</p>
-            <p tw="m-0">The table may be paused or there may be</p>
-            <p tw="m-0">too many open games right now.</p>
-            <p>&nbsp;</p>
-          </div>
-        </div>
-      ),
+      image: `${baseUrl}/blackjack/blackjack-closed.jpg`,
+      buttons: [
+        <Button action="post" key="back-button" target="/start">
+          Back to Start
+        </Button>,
+      ],
+      state: { ...ctx.state, table, game, owner },
+    }
+  }
+
+  // if game started and can't start a new one
+  if (game.startedAt === 0 && table.gameCount >= table.remainingBalance / table.size) {
+    return {
+      image: `${baseUrl}/blackjack/blackjack-too-many.jpg`,
       buttons: [
         <Button action="post" key="back-button" target="/start">
           Back to Start

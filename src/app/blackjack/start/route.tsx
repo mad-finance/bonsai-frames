@@ -3,15 +3,7 @@ import { baseUrl, frames } from "../frames"
 
 const handleRequest = frames(async () => {
   return {
-    image: (
-      <div
-        tw="flex w-full h-full items-center justify-center"
-        style={{
-          backgroundImage: `url(${baseUrl}/blackjack/blackjack-start.jpg)`,
-          backgroundSize: "cover",
-        }}
-      ></div>
-    ),
+    image: `${baseUrl}/blackjack/blackjack-start.jpg`,
     buttons: [
       <Button action="post" key="button" target="/learn">
         How to Play
