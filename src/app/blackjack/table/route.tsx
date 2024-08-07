@@ -118,7 +118,7 @@ const handleRequest = frames(async (ctx) => {
         <div
           tw="flex w-full h-full relative items-center justify-center"
           style={{
-            backgroundImage: `url(${baseUrl}}/blackjack/blackjack-default.jpg)`,
+            backgroundImage: `url(${baseUrl}/blackjack/blackjack-default.jpg)`,
             backgroundSize: "cover",
             fontFamily: "'Verdana', monospace",
             fontWeight: 700,
