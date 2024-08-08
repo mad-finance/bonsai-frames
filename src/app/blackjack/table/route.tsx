@@ -103,7 +103,7 @@ const handleRequest = frames(async (ctx) => {
         <Button action="post" key="back-button" target="/start">
           Back to Start
         </Button>,
-        <Button action="tx" key="close-button" target="/close-tx" post_url="/play-status">
+        <Button action="tx" key="close-button" target="/close-tx" post_url="/table">
           Close Game
         </Button>,
       ],
@@ -183,7 +183,7 @@ const handleRequest = frames(async (ctx) => {
         <Button action="post" key="status-button" target="/start">
           Back
         </Button>,
-        <Button action="tx" key="approve-button" target="/approve-tx" post_url="/approve-status">
+        <Button action="tx" key="approve-button" target="/approve-tx" post_url="/table">
           Approve $BONSAI
         </Button>,
       ],
@@ -195,7 +195,7 @@ const handleRequest = frames(async (ctx) => {
   if (game.isOver) {
     const playerWon = didPlayerWin(game)
     const buttons = [
-      <Button action="tx" key="close-button" target="/close-tx" post_url="/play-status">
+      <Button action="tx" key="close-button" target="/close-tx" post_url="/table">
         Close Game
       </Button>,
     ]
@@ -263,14 +263,14 @@ const handleRequest = frames(async (ctx) => {
     <Button action="post" key="status-button" target="/table">
       Refresh
     </Button>,
-    <Button action="tx" key="hit-button" target="/hit-tx" post_url="play-status">
+    <Button action="tx" key="hit-button" target="/hit-tx" post_url="/table">
       {game.playerHand?.length === 0 ? "Deal First Hand" : "Hit"}
     </Button>,
   ]
 
   if (game.playerHand?.length > 0) {
     buttons.push(
-      <Button action="tx" key="stand-button" target="/stand-tx" post_url="play-status">
+      <Button action="tx" key="stand-button" target="/stand-tx" post_url="/table">
         Stand
       </Button>
     )
