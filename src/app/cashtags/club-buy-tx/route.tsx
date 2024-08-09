@@ -2,24 +2,24 @@ import { frames } from "../frames";
 import { transaction } from "frames.js/core";
 import { Abi, encodeFunctionData, zeroAddress } from "viem";
 import { MONEY_CLUBS_CONTRACT_ADDRESS } from "@/app/services/moneyClubs";
-import MadMoneyClubsAbi from "@/app/services/abi/MadMoneyClubs.json";
+import MoneyClubsAbi from "@/app/services/abi/MoneyClubs.json";
 
 export const POST = frames(async (ctx) => {
   if (!ctx.message) throw new Error("No message");
 
-  const { buyAmount, moneyClubAddress } = ctx.state;
+  const { buyAmount, moneyClubAddress, walletAddress } = ctx.state;
 
   const calldata = encodeFunctionData({
-    abi: MadMoneyClubsAbi,
+    abi: MoneyClubsAbi,
     functionName: "buyChips",
-    args: [moneyClubAddress, buyAmount, zeroAddress]
+    args: [moneyClubAddress, buyAmount, zeroAddress, walletAddress]
   });
 
   return transaction({
     chainId: "eip155:137",
     method: "eth_sendTransaction",
     params: {
-      abi: MadMoneyClubsAbi as Abi,
+      abi: MoneyClubsAbi as Abi,
       to: MONEY_CLUBS_CONTRACT_ADDRESS,
       data: calldata
     },

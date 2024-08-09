@@ -1,7 +1,7 @@
 import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client";
 import { polygon } from "viem/chains";
 import { createPublicClient, http, parseUnits, erc20Abi, formatEther } from "viem";
-import MadMoneyClubsAbi from "./abi/MadMoneyClubs.json";
+import MoneyClubsAbi from "./abi/MoneyClubs.json";
 import { BONSAI_TOKEN_ADDRESS, roundedToFixed } from "./utils";
 
 const REGISTERED_CLUB = gql`
@@ -29,7 +29,7 @@ const PREVIOUS_TRADE = gql`
 export const INITIAL_CHIP_SUPPLY_CAP = 10; // with 6 decimals in the contract
 export const DECIMALS = 6;
 export const MONEY_CLUBS_SUBGRAPH_URL = `https://gateway-arbitrum.network.thegraph.com/api/${process.env.MONEY_CLUBS_SUBGRAPH_API_KEY}/subgraphs/id/ECHELoGXmU3uscig75SygTqkUhB414jNAHifd4WtpRoa`;
-export const MONEY_CLUBS_CONTRACT_ADDRESS = "0x1463e62f704dd82efbb9df4822da7d19a8144ed1";
+export const MONEY_CLUBS_CONTRACT_ADDRESS = "0x85BeD62602026EA5AA5aBcaf5547A6d730E2B066";
 
 const subgraphClient = () => {
   return new ApolloClient({
@@ -56,7 +56,7 @@ export const getRegisteredClub = async (id: `0x${string}`) => {
 export const getCurrentPrice = async (id: `0x${string}`, amount: string = '1'): Promise<BigInt> => {
   const price = publicClient.readContract({
     address: MONEY_CLUBS_CONTRACT_ADDRESS,
-    abi: MadMoneyClubsAbi,
+    abi: MoneyClubsAbi,
     functionName: "getBuyPrice",
     args: [id, parseUnits(amount, DECIMALS)],
   });
@@ -67,7 +67,7 @@ export const getCurrentPrice = async (id: `0x${string}`, amount: string = '1'): 
 export const getBuyPriceAfterFees = async (id: `0x${string}`, amount: string): Promise<BigInt> => {
   const price = publicClient.readContract({
     address: MONEY_CLUBS_CONTRACT_ADDRESS,
-    abi: MadMoneyClubsAbi,
+    abi: MoneyClubsAbi,
     functionName: "getBuyPriceAfterFees",
     args: [id, parseUnits(amount, DECIMALS)],
   });
@@ -78,7 +78,7 @@ export const getBuyPriceAfterFees = async (id: `0x${string}`, amount: string): P
 export const getSellPriceAfterFees = async (id: `0x${string}`, amount: string): Promise<BigInt> => {
   const price = publicClient.readContract({
     address: MONEY_CLUBS_CONTRACT_ADDRESS,
-    abi: MadMoneyClubsAbi,
+    abi: MoneyClubsAbi,
     functionName: "getSellPriceAfterFees",
     args: [id, parseUnits(amount, DECIMALS)],
   });
@@ -89,7 +89,7 @@ export const getSellPriceAfterFees = async (id: `0x${string}`, amount: string): 
 export const getBalance = async (id: `0x${string}`, account: `0x${string}`): Promise<BigInt> => {
   const balance = publicClient.readContract({
     address: MONEY_CLUBS_CONTRACT_ADDRESS,
-    abi: MadMoneyClubsAbi,
+    abi: MoneyClubsAbi,
     functionName: "balances",
     args: [id, account],
   });
