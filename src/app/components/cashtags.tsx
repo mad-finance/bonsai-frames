@@ -39,7 +39,7 @@ export const PriceInfo = ({ currentPrice, prevPrice }: PriceInfoProps) => {
       {/* NOTE: cannot wrap this number in a div or a span... */}
       {roundedToFixed(parseFloat(formatEther(currentPrice)), 2)}
       <span tw="text-10 ml-4 mt-6">$BONSAI</span>
-      {prevPrice && (
+      {prevPrice && (prevPrice.toString() != currentPrice.toString()) && (
         <span tw={`ml-6 rounded-xl px-2 ${BigInt(prevPrice) < BigInt(currentPrice.toString()) ? 'bg-green-700' : 'bg-red-700'}`}>
           {`${BigInt(prevPrice) < BigInt(currentPrice.toString()) ? '+' : '-'}${calculatePriceDelta(BigInt(currentPrice.toString()), BigInt(prevPrice))}%`}
         </span>
