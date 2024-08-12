@@ -1,13 +1,21 @@
-import { LensClient, production, FrameVerifySignatureResult } from "@lens-protocol/client";
+import { LensClient, production, FrameVerifySignatureResult } from "@lens-protocol/client"
 
 interface VerifyFrameSignatureProps {
-  untrustedData: any;
-  trustedData: any;
+  untrustedData: any
+  trustedData: any
 }
 
-export const lensClient = new LensClient({ environment: production });
+export const lensClient = new LensClient({ environment: production })
 
-export const verifyFrameSignature = async ({ untrustedData, trustedData }: VerifyFrameSignatureProps): Promise<boolean> => {
+export const getProfileById = async (forProfileId) => {
+  const profile = await lensClient.profile.fetch({ forProfileId })
+  return profile
+}
+
+export const verifyFrameSignature = async ({
+  untrustedData,
+  trustedData,
+}: VerifyFrameSignatureProps): Promise<boolean> => {
   const {
     url,
     inputText,
@@ -19,7 +27,7 @@ export const verifyFrameSignature = async ({ untrustedData, trustedData }: Verif
     specVersion,
     deadline,
     identityToken,
-  } = untrustedData;
+  } = untrustedData
   const typedData = await lensClient.frames.createFrameTypedData({
     url,
     inputText,
@@ -30,12 +38,12 @@ export const verifyFrameSignature = async ({ untrustedData, trustedData }: Verif
     pubId,
     specVersion,
     deadline,
-  });
+  })
   const verification = await lensClient.frames.verifyFrameSignature({
     identityToken: untrustedData.identityToken,
     signature: trustedData.messageBytes,
     signedTypedData: typedData,
-  });
+  })
 
-  return verification === FrameVerifySignatureResult.Verified;
-};
+  return verification === FrameVerifySignatureResult.Verified
+}

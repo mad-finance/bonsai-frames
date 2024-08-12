@@ -1,6 +1,5 @@
 import { Button } from "frames.js/next"
 import { baseUrl, frames } from "../frames"
-import { getProfileOwner } from "@/app/services/treasureHunt"
 import {
   getTable,
   getTableId,
@@ -10,6 +9,8 @@ import {
   composeUrl,
 } from "@/app/services/blackjack"
 import { formatUnits } from "viem"
+import { getProfileById } from "@/app/services/lens"
+import { getProfileOwner } from "@/app/services/treasureHunt"
 
 const suits = ["HE", "DI", "CL", "SP"]
 const rankNames = ["NONE", "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"]
@@ -182,8 +183,10 @@ const handleRequest = frames(async (ctx) => {
   // if game has been won/lost
   if (game.isOver) {
     const playerWon = didPlayerWin(game)
+    const [profileId, _] = ctx.message?.pubId.split("-")
+    const profile = await getProfileById(profileId)
     const shareUrl = composeUrl(
-      "Share 🦋",
+      `Play against ${profile?.handle?.suggestedFormatted} at Bonsai Blackjack! ♦️♣️♥️♠️`,
       `https://frames.bonsai.meme/blackjack/start?table=${tableId}`,
       "lens"
     )
