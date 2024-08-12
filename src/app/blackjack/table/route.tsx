@@ -7,6 +7,7 @@ import {
   getUserAllowance,
   getGameInfo,
   didPlayerWin,
+  composeUrl,
 } from "@/app/services/blackjack"
 import { formatUnits } from "viem"
 
@@ -181,7 +182,15 @@ const handleRequest = frames(async (ctx) => {
   // if game has been won/lost
   if (game.isOver) {
     const playerWon = didPlayerWin(game)
+    const shareUrl = composeUrl(
+      "Share 🦋",
+      `https://frames.bonsai.meme/blackjack/start?table=${tableId}`,
+      "lens"
+    )
     const buttons = [
+      <Button action="link" key="share" target={shareUrl}>
+        Share Table 🦋
+      </Button>,
       <Button action="tx" key="close-button" target="/close-tx" post_url="/table">
         Close Game
       </Button>,

@@ -10,6 +10,17 @@ export const BLACKJACK_ADDRESS = "0xa7774490374363bf53E6e18b1fB05C92BcB6B74C"
 const { PRIVATE_KEY } = process.env
 const adminAccount = privateKeyToAccount(`0x${PRIVATE_KEY}`) // from madfiprotocol.eth
 
+export const composeUrl = (text, embedUrl, platform) => {
+  if (platform === 'lens') {
+    return `lens://compose?text=${encodeURIComponent(text + '\n\n' + embedUrl)}`;
+  } else if (platform === 'farcaster') {
+    return `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(embedUrl)}`;
+  } else {
+    return ``;
+  }
+};
+
+
 export const getTableId = (ctx) => {
   const urlParams = new URLSearchParams(new URL(ctx.message.url).search)
   if (urlParams.get("table") != null) return urlParams.get("table")
