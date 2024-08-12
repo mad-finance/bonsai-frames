@@ -14,6 +14,8 @@ import { LENS_HUB_ADDRESS } from "@/app/services/treasureHunt"
 export const POST = frames(async (ctx) => {
   if (!ctx.message) throw new Error("No message")
 
+  console.log(ctx.message)
+
   const pubParts = ctx.message?.pubId.split("-")
   const signedRNG = await getSignedRNG()
 

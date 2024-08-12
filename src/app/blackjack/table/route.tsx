@@ -38,7 +38,10 @@ const handleRequest = frames(async (ctx) => {
     getUserAllowance(owner),
   ])
 
+  console.log("tableId", tableId)
+
   const table = {
+    tableId,
     remainingBalance: tableData[0].toString(),
     size: tableData[1].toString(),
     creator: tableData[2],

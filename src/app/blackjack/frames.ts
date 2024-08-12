@@ -15,6 +15,7 @@ export type State = {
     dealerHand: any
   }
   table?: {
+    tableId: string
     remainingBalance: string
     size: string
     creator: string
