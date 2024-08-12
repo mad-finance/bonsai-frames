@@ -39,6 +39,7 @@ const handleRequest = frames(async (ctx) => {
   ])
 
   console.log("tableId", tableId)
+  console.log("message", ctx.message)
 
   const table = {
     tableId,
