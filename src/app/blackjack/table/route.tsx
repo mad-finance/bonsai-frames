@@ -186,7 +186,7 @@ const handleRequest = frames(async (ctx) => {
     const [profileId, _] = ctx.message?.pubId.split("-")
     const profile = await getProfileById(profileId)
     const shareUrl = composeUrl(
-      `Play against ${profile?.handle?.suggestedFormatted.full} at Bonsai Blackjack! ♦️♣️♥️♠️`,
+      `Play against @${profile?.handle?.fullHandle} at Bonsai Blackjack! ♦️♣️♥️♠️`,
       `https://frames.bonsai.meme/blackjack/start?table=${tableId}`,
       "lens"
     )
