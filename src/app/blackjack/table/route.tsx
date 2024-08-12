@@ -195,9 +195,9 @@ const handleRequest = frames(async (ctx) => {
       "lens"
     )
     const buttons = [
-      <Button action="link" key="share" target={shareUrl}>
-        Share Table 🦋
-      </Button>,
+      // <Button action="link" key="share" target={shareUrl}>
+      //   Share Table 🦋
+      // </Button>,
       <Button action="tx" key="close-button" target="/close-tx" post_url="/table">
         Close Game
       </Button>,
