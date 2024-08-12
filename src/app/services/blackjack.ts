@@ -11,6 +11,8 @@ const { PRIVATE_KEY } = process.env
 const adminAccount = privateKeyToAccount(`0x${PRIVATE_KEY}`) // from madfiprotocol.eth
 
 export const getTableId = (ctx) => {
+  const urlParams = new URLSearchParams(new URL(ctx.message.url).search)
+  if (urlParams.get("table") != null) return urlParams.get("table")
   const [profileId, pubId] = ctx.message?.pubId.split("-")
   return keccak256(encodePacked(["uint256", "uint256"], [BigInt(profileId), BigInt(pubId)]))
 }

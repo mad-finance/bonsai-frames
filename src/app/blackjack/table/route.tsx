@@ -164,19 +164,6 @@ const handleRequest = frames(async (ctx) => {
           >
             {formatUnits(table.size, 18)} $BONSAI
           </p>
-
-          {/* 
-          <div tw="flex flex-col items-center">
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p>&nbsp;</p>
-            <p tw="m-0">Approve the Blackjack contract to spend your tokens.</p>
-            <p tw="m-0">(You must deposit your bet in order to start a game.)</p>
-            <p tw="m-10">This is required to play.</p>
-            <p tw="m-0">Bet size is: {formatUnits(table.size, 18)} $BONSAI</p>
-            <p>&nbsp;</p>
-          </div>
-            */}
         </div>
       ),
       buttons: [
@@ -239,18 +226,6 @@ const handleRequest = frames(async (ctx) => {
                 <CardComponent card={card} key={i} />
               ))}
             </div>
-
-            {/*
-            <div tw="flex w-1150px items-center justify-center">
-              <p
-                tw={`${
-                  playerWon ? "bg-green-500" : "bg-red-500"
-                } px-10 py-6 rounded-full text-4xl font-bold`}
-              >
-                {playerWon ? "You Win! 🎉" : "You Lost :("}
-              </p>
-            </div>
-            */}
           </div>
         </div>
       ),
