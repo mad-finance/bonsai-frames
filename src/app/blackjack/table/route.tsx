@@ -30,18 +30,21 @@ const CardComponent = ({ card }) => {
 }
 
 const handleRequest = frames(async (ctx) => {
-  const [tableId, owner] = await Promise.all([
-    ctx.state.table?.tableId ?? getTableId(ctx),
+  const [tableInfo, owner] = await Promise.all([
+    ctx.state.table?.tableId
+      ? { tableId: ctx.state.table?.tableId, shared: ctx.state.table?.shared }
+      : getTableId(ctx),
     ctx.state.owner ?? getProfileOwner(ctx.message?.profileId),
   ])
   const [tableData, gameInfo, allowance] = await Promise.all([
-    getTable(tableId),
-    getGameInfo(tableId, owner),
+    getTable(tableInfo.tableId),
+    getGameInfo(tableInfo.tableId, owner),
     getUserAllowance(owner),
   ])
 
   const table = {
-    tableId,
+    tableId: tableInfo.tableId,
+    shared: tableInfo.shared,
     remainingBalance: tableData[0].toString(),
     size: tableData[1].toString(),
     creator: tableData[2],
@@ -194,9 +197,9 @@ const handleRequest = frames(async (ctx) => {
       "lens"
     )
     const buttons = [
-      // <Button action="link" key="share" target={shareUrl}>
-      //   Share Table 🦋
-      // </Button>,
+      <Button action="link" key="share" target={shareUrl}>
+        Share Table 🦋
+      </Button>,
       <Button action="tx" key="close-button" target="/close-tx" post_url="/table">
         Close Game
       </Button>,

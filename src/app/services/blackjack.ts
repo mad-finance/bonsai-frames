@@ -26,11 +26,14 @@ export const composeUrl = (text, embedUrl, platform) => {
 export const getTableId = async (ctx) => {
   // parse table id from post
   const sharedTableId = await getSharedTable(ctx.message?.pubId)
-  if (sharedTableId) return sharedTableId
+  if (sharedTableId) return { tableId: sharedTableId, shared: true }
 
   // else parse from publication id
   const [profileId, pubId] = ctx.message?.pubId.split("-")
-  return keccak256(encodePacked(["uint256", "uint256"], [BigInt(profileId), BigInt(pubId)]))
+  return {
+    tableId: keccak256(encodePacked(["uint256", "uint256"], [BigInt(profileId), BigInt(pubId)])),
+    shared: false,
+  }
 }
 
 export const getTable = async (tableId): Promise<any> => {

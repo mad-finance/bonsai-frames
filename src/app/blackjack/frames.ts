@@ -16,6 +16,7 @@ export type State = {
   }
   table?: {
     tableId: string
+    shared: boolean
     remainingBalance: string
     size: string
     creator: string

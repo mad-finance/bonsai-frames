@@ -7,26 +7,24 @@ import {
   BLACKJACK_ADDRESS,
   getModuleData,
   getSignedRNG,
-  getTableId,
 } from "@/app/services/blackjack"
 import { LENS_HUB_ADDRESS } from "@/app/services/treasureHunt"
 
 export const POST = frames(async (ctx) => {
   if (!ctx.message) throw new Error("No message")
-
-  console.log(ctx.message)
+  if (!ctx.state) throw new Error("No state")
 
   const pubParts = ctx.message?.pubId.split("-")
   const signedRNG = await getSignedRNG()
 
-  if (ctx?.message?.url?.includes("?table=")) {
+  if (ctx.state.table?.shared) {
     // call contract directly
     const calldata = encodeFunctionData({
       abi: BlackjackAbi,
       functionName: "play",
       args: [
         0,
-        getTableId(ctx),
+        ctx.state.table.tableId,
         signedRNG.signature,
         { seedOne: signedRNG.seedOne, seedTwo: signedRNG.seedTwo },
       ],

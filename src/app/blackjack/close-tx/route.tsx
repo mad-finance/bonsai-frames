@@ -8,13 +8,14 @@ import { LENS_HUB_ADDRESS } from "@/app/services/treasureHunt"
 
 export const POST = frames(async (ctx) => {
   if (!ctx.message) throw new Error("No message")
+  if (!ctx.state) throw new Error("No state")
 
-  if (ctx?.message?.url?.includes("?table=")) {
+  if (ctx?.state.table?.shared) {
     // call contract directly
     const calldata = encodeFunctionData({
       abi: BlackjackAbi,
       functionName: "closeGame",
-      args: [getTableId(ctx), ctx.state.owner],
+      args: [ctx.state.table.tableId, ctx.state.owner],
     })
 
     return transaction({
