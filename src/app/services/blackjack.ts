@@ -4,6 +4,7 @@ import { publicClient } from "./moneyClubs"
 import { BONSAI_TOKEN_ADDRESS } from "./utils"
 import { privateKeyToAccount } from "viem/accounts"
 import axios from "axios"
+import { getSharedTable } from "./lens"
 
 export const BLACKJACK_ADDRESS = "0xa7774490374363bf53E6e18b1fB05C92BcB6B74C"
 
@@ -11,19 +12,23 @@ const { PRIVATE_KEY } = process.env
 const adminAccount = privateKeyToAccount(`0x${PRIVATE_KEY}`) // from madfiprotocol.eth
 
 export const composeUrl = (text, embedUrl, platform) => {
-  if (platform === 'lens') {
-    return `lens://compose?text=${encodeURIComponent(text + '\n\n' + embedUrl)}`;
-  } else if (platform === 'farcaster') {
-    return `https://warpcast.com/~/compose?text=${encodeURIComponent(text)}&embeds[]=${encodeURIComponent(embedUrl)}`;
+  if (platform === "lens") {
+    return `lens://compose?text=${encodeURIComponent(text + "\n\n" + embedUrl)}`
+  } else if (platform === "farcaster") {
+    return `https://warpcast.com/~/compose?text=${encodeURIComponent(
+      text
+    )}&embeds[]=${encodeURIComponent(embedUrl)}`
   } else {
-    return ``;
+    return ``
   }
-};
+}
 
+export const getTableId = async (ctx) => {
+  // parse table id from post
+  const sharedTableId = await getSharedTable(ctx.message?.pubId)
+  if (sharedTableId) return sharedTableId
 
-export const getTableId = (ctx) => {
-  const urlParams = new URLSearchParams(new URL(ctx.message.url).search)
-  if (urlParams.get("table") != null) return urlParams.get("table")
+  // else parse from publication id
   const [profileId, pubId] = ctx.message?.pubId.split("-")
   return keccak256(encodePacked(["uint256", "uint256"], [BigInt(profileId), BigInt(pubId)]))
 }

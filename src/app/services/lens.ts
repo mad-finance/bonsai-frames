@@ -12,6 +12,24 @@ export const getProfileById = async (forProfileId) => {
   return profile
 }
 
+export const getSharedTable = async (forId: string) => {
+  const publication = await lensClient.publication.fetch({ forId })
+  if (publication) {
+    const content = publication.metadata?.content
+    if (content) {
+      const match = content.match(/https?:\/\/frames\.bonsai\.meme[^\s)]+/)
+      if (match) {
+        const url = match[0]
+        const urlParams = new URLSearchParams(new URL(url).search)
+        return urlParams.get("table") // returns parsed table id param or null
+      }
+      return null
+    }
+    return null
+  }
+  return null
+}
+
 export const verifyFrameSignature = async ({
   untrustedData,
   trustedData,

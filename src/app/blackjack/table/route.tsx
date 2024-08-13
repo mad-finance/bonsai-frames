@@ -30,16 +30,15 @@ const CardComponent = ({ card }) => {
 }
 
 const handleRequest = frames(async (ctx) => {
-  const tableId = getTableId(ctx)
-  const owner = await getProfileOwner(ctx.message?.profileId)
+  const [tableId, owner] = await Promise.all([
+    ctx.state.table?.tableId ?? getTableId(ctx),
+    ctx.state.owner ?? getProfileOwner(ctx.message?.profileId),
+  ])
   const [tableData, gameInfo, allowance] = await Promise.all([
     getTable(tableId),
     getGameInfo(tableId, owner),
     getUserAllowance(owner),
   ])
-
-  console.log("tableId", tableId)
-  console.log("message", ctx.message)
 
   const table = {
     tableId,
