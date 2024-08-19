@@ -64,10 +64,12 @@ const handleRequest = frames(async (ctx) => {
       Refresh
     </Button>,
   ]
-  if (pokeParams.pokeStatus.lastPokeProfileId != Number(ctx.message?.profileId)) {
+  if (
+    pokeParams.pokeStatus.lastPokeProfileId != Number(ctx.message?.profileId)
+  ) {
     buttons.push(
       <Button action="tx" key="button3" target="/poke-tx" post_url="/poke-sent">
-        {timeRemaining && timeRemaining > 0 ? "Poke" : "End"}
+        {timeRemaining && timeRemaining > 0 || pokeParams.pokeStatus.lastPokeProfileId === 0 ? "Poke" : "End"}
       </Button>
     )
   }

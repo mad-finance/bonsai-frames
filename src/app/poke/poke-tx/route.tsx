@@ -38,7 +38,7 @@ export const POST = frames(async (ctx) => {
   const calldata = encodeFunctionData({
     abi: PokeAbi,
     functionName: "poke",
-    args: [BigInt(ctx.state.pokeParams.toProfileId), ctx.message.profileId, DEFAULT_POKE_AMOUNT],
+    args: [ctx.message.profileId, BigInt(ctx.state.pokeParams.toProfileId), DEFAULT_POKE_AMOUNT],
   })
 
   return transaction({
