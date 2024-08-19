@@ -4,6 +4,7 @@ import { publicClient } from "./moneyClubs"
 import { BONSAI_TOKEN_ADDRESS } from "./utils"
 import { lensClient } from "./lens"
 import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client"
+import { convertIntToHexLensId } from "./treasureHunt"
 
 export const POKE_ADDRESS = "0x3e3568b5f98e109Eec0DBb8B18eD8ED4A56A62b9"
 
@@ -82,14 +83,11 @@ export const getPokeStatus = async (userProfileId, forHandle) => {
     args: [whoStartedIt, whoStartedIt == userProfileId ? toProfileId : userProfileId],
   })
 
-  // TODO: show data from subgraph
-  /*
   // fetch subgraph data for start time and streak
   const { data } = await subgraphClient().query({
     query: POKE_WAR,
-    variables: { id: pokeStatus[5].toString() },
+    variables: { id: convertIntToHexLensId(pokeStatus[5].toString()) },
   })
-  */
 
   return {
     toProfileId,
@@ -101,6 +99,7 @@ export const getPokeStatus = async (userProfileId, forHandle) => {
       lastPokeTimestamp: Number(pokeStatus[3]),
       lastPokeProfileId: Number(pokeStatus[4]),
       nonce: pokeStatus[5].toString(),
+      subgraphData: data.pokeWar,
     },
   }
 }

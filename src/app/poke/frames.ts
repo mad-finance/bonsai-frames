@@ -19,6 +19,21 @@ export type State = {
       lastPokeTimestamp: number
       lastPokeProfileId: number
       nonce: string
+      subgraphData: {
+        __typename: string
+        nonce: string
+        startedAt: string
+        endedAt?: boolean
+        startingAmount: string
+        currentAmount: string
+        increment: string
+        deposited: boolean
+        lastPokeTimestamp: string
+        lastPokeProfileId: string
+        startedByProfileId: string
+        toProfileId: string
+        streak: number
+      }
     }
   }
   transactionId?: string

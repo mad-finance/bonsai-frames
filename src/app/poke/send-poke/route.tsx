@@ -90,15 +90,30 @@ const handleRequest = frames(async (ctx) => {
   return {
     image: (
       <div tw="flex flex-col items-center">
-        <p>Poke war started by: {pokeParams.whoStartedIt.toString()}</p>
-        <p>Total amount wagered: {formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}</p>
-        <p>Increment amount: {formatUnits(BigInt(pokeParams.pokeStatus.increment), 18)}</p>
-        <p>Last poke was by: {pokeParams.pokeStatus.lastPokeProfileId.toString()}</p>
+        <div tw="flex">Poke war started by: {pokeParams.whoStartedIt.toString()}</div>
+        <div tw="flex">
+          Poke war started at:{" "}
+          {new Date(Number(pokeParams.pokeStatus.subgraphData.startedAt) * 1000)
+            .toString()
+            .substring(0, 25)}
+        </div>
+        <div tw="flex">
+          Starting amount:{" "}
+          {formatUnits(BigInt(pokeParams.pokeStatus.subgraphData.startingAmount), 18)}
+        </div>
+        <div tw="flex">
+          Increment amount: {formatUnits(BigInt(pokeParams.pokeStatus.increment), 18)}
+        </div>
+        <div tw="flex">
+          Total amount wagered: {formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}
+        </div>
+        <div tw="flex">Last poke was by: {pokeParams.pokeStatus.lastPokeProfileId.toString()}</div>
+        <div tw="flex">Streak: {pokeParams.pokeStatus.subgraphData.streak.toString()}</div>
         {timeRemaining &&
           (timeRemaining > 0 ? (
-            <p>Time remaining for poke back: {formatTimeRemaining(timeRemaining)}</p>
+            <div tw="flex">Time remaining for poke back: {formatTimeRemaining(timeRemaining)}</div>
           ) : (
-            <p>Game Over</p>
+            <div tw="flex">Game Over</div>
           ))}
       </div>
     ),
