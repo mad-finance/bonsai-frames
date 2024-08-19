@@ -11,12 +11,14 @@ export type State = {
   pokeParams?: {
     toHandle: string
     toProfileId: number
-    whoStartedIt: string, 
+    whoStartedIt: string
     pokeStatus: {
       amount: string
+      increment: string
       deposited: boolean
-      lastPokeTimestamp: Number
-      lastPokeProfileId: Number
+      lastPokeTimestamp: number
+      lastPokeProfileId: number
+      nonce: string
     }
   }
   transactionId?: string

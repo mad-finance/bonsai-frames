@@ -64,12 +64,12 @@ const handleRequest = frames(async (ctx) => {
       Refresh
     </Button>,
   ]
-  if (
-    pokeParams.pokeStatus.lastPokeProfileId != Number(ctx.message?.profileId)
-  ) {
+  if (pokeParams.pokeStatus.lastPokeProfileId != Number(ctx.message?.profileId)) {
     buttons.push(
       <Button action="tx" key="button3" target="/poke-tx" post_url="/poke-sent">
-        {timeRemaining && timeRemaining > 0 || pokeParams.pokeStatus.lastPokeProfileId === 0 ? "Poke" : "End"}
+        {(timeRemaining && timeRemaining > 0) || pokeParams.pokeStatus.lastPokeProfileId === 0
+          ? "Poke"
+          : "End"}
       </Button>
     )
   }
@@ -91,7 +91,8 @@ const handleRequest = frames(async (ctx) => {
     image: (
       <div tw="flex flex-col items-center">
         <p>Poke war started by: {pokeParams.whoStartedIt.toString()}</p>
-        <p>Wager amount: {formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}</p>
+        <p>Total amount wagered: {formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}</p>
+        <p>Increment amount: {formatUnits(BigInt(pokeParams.pokeStatus.increment), 18)}</p>
         <p>Last poke was by: {pokeParams.pokeStatus.lastPokeProfileId.toString()}</p>
         {timeRemaining &&
           (timeRemaining > 0 ? (

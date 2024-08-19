@@ -3,10 +3,21 @@ import { erc20Abi, parseUnits } from "viem"
 import { publicClient } from "./moneyClubs"
 import { BONSAI_TOKEN_ADDRESS } from "./utils"
 import { lensClient } from "./lens"
+import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client"
 
-export const POKE_ADDRESS = "0x54d42da1eb263B4dA94EDE6077FA23311B76bD03"
+export const POKE_ADDRESS = "0x3e3568b5f98e109Eec0DBb8B18eD8ED4A56A62b9"
 
 export const DEFAULT_POKE_AMOUNT = parseUnits("100", 18)
+export const DEFAULT_POKE_INCREMENT = parseUnits("1", 18)
+
+const madfiSubgraphUrl = "https://api.studio.thegraph.com/query/18207/madfi-subgraph/version/latest"
+const subgraphClient = () => {
+  return new ApolloClient({
+    ssrMode: typeof window === "undefined", // set to true for server-side rendering
+    link: new HttpLink({ uri: madfiSubgraphUrl }),
+    cache: new InMemoryCache(),
+  })
+}
 
 export const composeUrl = (text, embedUrl, platform) => {
   if (platform === "lens") {
@@ -31,6 +42,25 @@ export const getUserAllowancePoke = async (account): Promise<bigint> => {
   return allowance
 }
 
+const POKE_WAR = gql`
+  query PokeWar($id: Bytes!) {
+    pokeWar(id: $id) {
+      nonce
+      startedAt
+      endedAt
+      startingAmount
+      currentAmount
+      increment
+      deposited
+      lastPokeTimestamp
+      lastPokeProfileId
+      startedByProfileId
+      toProfileId
+      streak
+    }
+  }
+`
+
 export const getPokeStatus = async (userProfileId, forHandle) => {
   // get profile id of handleToPoke
   const profile = await lensClient.profile.fetch({ forHandle: `lens/${forHandle}` })
@@ -52,14 +82,25 @@ export const getPokeStatus = async (userProfileId, forHandle) => {
     args: [whoStartedIt, whoStartedIt == userProfileId ? toProfileId : userProfileId],
   })
 
+  // TODO: show data from subgraph
+  /*
+  // fetch subgraph data for start time and streak
+  const { data } = await subgraphClient().query({
+    query: POKE_WAR,
+    variables: { id: pokeStatus[5].toString() },
+  })
+  */
+
   return {
     toProfileId,
     whoStartedIt: (whoStartedIt as bigint).toString(),
     pokeStatus: {
       amount: pokeStatus[0].toString(),
-      deposited: pokeStatus[1],
-      lastPokeTimestamp: Number(pokeStatus[2]),
-      lastPokeProfileId: Number(pokeStatus[3]),
+      increment: pokeStatus[1].toString(),
+      deposited: pokeStatus[2],
+      lastPokeTimestamp: Number(pokeStatus[3]),
+      lastPokeProfileId: Number(pokeStatus[4]),
+      nonce: pokeStatus[5].toString(),
     },
   }
 }

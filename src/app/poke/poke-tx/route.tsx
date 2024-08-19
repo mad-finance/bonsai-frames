@@ -4,7 +4,7 @@ import { frames } from "../frames"
 import { transaction } from "frames.js/core"
 import { Abi, encodeAbiParameters, encodeFunctionData, parseAbiParameters } from "viem"
 import { LENS_HUB_ADDRESS } from "@/app/services/treasureHunt"
-import { DEFAULT_POKE_AMOUNT, POKE_ADDRESS } from "@/app/services/poke"
+import { DEFAULT_POKE_AMOUNT, DEFAULT_POKE_INCREMENT, POKE_ADDRESS } from "@/app/services/poke"
 
 export const POST = frames(async (ctx) => {
   if (!ctx.message) throw new Error("No message")
@@ -38,7 +38,12 @@ export const POST = frames(async (ctx) => {
   const calldata = encodeFunctionData({
     abi: PokeAbi,
     functionName: "poke",
-    args: [ctx.message.profileId, BigInt(ctx.state.pokeParams.toProfileId), DEFAULT_POKE_AMOUNT],
+    args: [
+      ctx.message.profileId,
+      BigInt(ctx.state.pokeParams.toProfileId),
+      DEFAULT_POKE_AMOUNT,
+      DEFAULT_POKE_INCREMENT,
+    ],
   })
 
   return transaction({
