@@ -4,7 +4,7 @@ import { publicClient } from "./moneyClubs"
 import { BONSAI_TOKEN_ADDRESS } from "./utils"
 import { lensClient } from "./lens"
 
-export const POKE_ADDRESS = "0x48070F70D4A898753cD0c4b77149314680d043e9"
+export const POKE_ADDRESS = "0x54d42da1eb263B4dA94EDE6077FA23311B76bD03"
 
 export const DEFAULT_POKE_AMOUNT = parseUnits("100", 18)
 
