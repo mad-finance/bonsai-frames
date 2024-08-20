@@ -193,7 +193,7 @@ const handleRequest = frames(async (ctx) => {
     const profile = await getProfileById(profileId)
     const shareUrl = composeUrl(
       `Play against @${profile?.handle?.fullHandle} at Bonsai Blackjack! ♦️♣️♥️♠️`,
-      `https://frames.bonsai.meme/blackjack/start?table=${tableId}`,
+      `https://frames.bonsai.meme/blackjack/start?table=${tableInfo.tableId}`,
       "lens"
     )
     const buttons = [
