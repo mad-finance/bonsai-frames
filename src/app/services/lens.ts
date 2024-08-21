@@ -21,6 +21,7 @@ export const getSharedTable = async (forId: string) => {
       if (match) {
         const url = match[0]
         const urlParams = new URLSearchParams(new URL(url).search)
+        console.log("yoohoo", url, urlParams, urlParams.get("table"))
         return urlParams.get("table") // returns parsed table id param or null
       }
       return null
