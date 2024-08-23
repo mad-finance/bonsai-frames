@@ -65,6 +65,9 @@ const POKE_WAR = gql`
 export const getPokeStatus = async (userProfileId, forHandle) => {
   // get profile id of handleToPoke
   const profile = await lensClient.profile.fetch({ forHandle: `lens/${forHandle}` })
+  if (!profile) {
+    return null
+  }
   const toProfileId = profile?.id ? Number(profile.id) : 0
 
   // get who started poke

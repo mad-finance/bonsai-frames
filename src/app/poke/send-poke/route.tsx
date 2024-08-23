@@ -1,6 +1,6 @@
 import { Button } from "frames.js/next"
 import { frames } from "../frames"
-import { getProfileOwner } from "@/app/services/treasureHunt"
+import { convertIntToHexLensId, getProfileOwner } from "@/app/services/treasureHunt"
 import {
   DEFAULT_POKE_AMOUNT,
   formatTimeRemaining,
@@ -8,6 +8,7 @@ import {
   getUserAllowancePoke,
 } from "@/app/services/poke"
 import { formatUnits } from "viem"
+import { getProfileById } from "@/app/services/lens"
 
 const handleRequest = frames(async (ctx) => {
   // fetch data
@@ -28,6 +29,23 @@ const handleRequest = frames(async (ctx) => {
       toHandle,
       ...pokeParams,
     },
+  }
+
+  if (!pokeParams) {
+    return {
+      image: (
+        <div tw="flex flex-col items-center">
+          <p>This handle does not exist</p>
+          <p>Try another</p>
+        </div>
+      ),
+      buttons: [
+        <Button action="post" key="button1" target="/start">
+          Back
+        </Button>,
+      ],
+      state: { ...ctx.state },
+    }
   }
 
   // handle allowance
@@ -86,6 +104,13 @@ const handleRequest = frames(async (ctx) => {
       state: updatedState,
     }
   }
+
+  const [myProfile, otherProfile] = await Promise.all([
+    getProfileById(ctx.message?.profileId),
+    getProfileById(convertIntToHexLensId(updatedState.pokeParams?.toProfileId)),
+  ])
+
+  // console.log(myProfile, otherProfile)
 
   return {
     image: (

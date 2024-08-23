@@ -21,7 +21,8 @@ const TREASURE_HUNT = gql`
   }
 `
 
-export const convertIntToHexLensId = (profileId: string) => {
+export const convertIntToHexLensId = (profileId: string | number) => {
+  if (typeof profileId === "number") profileId = profileId.toString()
   let hexProfileId = parseInt(profileId).toString(16)
   // If the hex parsed profile id is an odd number length then it needs to be padded with a zero after the 0x
   if (hexProfileId.length % 2 !== 0) {
