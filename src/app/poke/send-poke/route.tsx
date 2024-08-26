@@ -120,14 +120,14 @@ const handleRequest = frames(async (ctx) => {
 
         {/* PFPs */}
 
-        <div tw="flex w-88px h-88px absolute top-365px left-300px" style={{
+        <div tw="flex w-80px h-80px absolute top-365px left-300px" style={{
           backgroundImage: `url(${baseUrl}/poke/pfp-placeholder-1.jpg)`,
-          backgroundSize: "88px 88px",
+          backgroundSize: "80px 80px",
           zIndex: 5,
         }}></div>
-        <div tw="flex w-88px h-88px absolute top-365px left-760px" style={{
+        <div tw="flex w-80px h-80px absolute top-365px left-760px" style={{
           backgroundImage: `url(${baseUrl}/poke/pfp-placeholder-2.jpg)`,
-          backgroundSize: "88px 88px",
+          backgroundSize: "80px 80px",
           zIndex: 5,
         }}></div>
 
