@@ -62,6 +62,48 @@ const POKE_WAR = gql`
   }
 `
 
+const GET_ALL_MY_POKES = gql`
+  query PokeWar($id: Bytes!) {
+    startedByMe: pokeWars(where: { startedByProfileId: $id }) {
+      nonce
+      startedAt
+      endedAt
+      startingAmount
+      currentAmount
+      increment
+      deposited
+      lastPokeTimestamp
+      lastPokeProfileId
+      startedByProfileId
+      toProfileId
+      streak
+    }
+    toMe: pokeWars(where: { toProfileId: $id }) {
+      nonce
+      startedAt
+      endedAt
+      startingAmount
+      currentAmount
+      increment
+      deposited
+      lastPokeTimestamp
+      lastPokeProfileId
+      startedByProfileId
+      toProfileId
+      streak
+    }
+  }
+`
+
+export const getAllMyActivePokes = async (profileId: number) => {
+  const { data } = await subgraphClient().query({
+    query: GET_ALL_MY_POKES,
+    variables: { id: profileId },
+  })
+
+  return data
+}
+
 export const getPokeStatus = async (userProfileId, forHandle) => {
   // get profile id of handleToPoke
   const profile = await lensClient.profile.fetch({ forHandle: `lens/${forHandle}` })
