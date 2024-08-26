@@ -1,5 +1,5 @@
 import { Button } from "frames.js/next"
-import { frames } from "../frames"
+import { baseUrl, frames } from "../frames"
 import { convertIntToHexLensId, getProfileOwner } from "@/app/services/treasureHunt"
 import {
   DEFAULT_POKE_AMOUNT,
@@ -33,12 +33,7 @@ const handleRequest = frames(async (ctx) => {
 
   if (!pokeParams) {
     return {
-      image: (
-        <div tw="flex flex-col items-center">
-          <p>This handle does not exist</p>
-          <p>Try another</p>
-        </div>
-      ),
+      image: `${baseUrl}/poke/poke-handleError.jpg`,
       buttons: [
         <Button action="post" key="button1" target="/start">
           Back
@@ -51,11 +46,7 @@ const handleRequest = frames(async (ctx) => {
   // handle allowance
   if (allowance < DEFAULT_POKE_AMOUNT) {
     return {
-      image: (
-        <div tw="flex">
-          <p>Approve the Poke contract to place your wager</p>
-        </div>
-      ),
+      image: `${baseUrl}/poke/poke-howto.jpg`,
       buttons: [
         <Button action="post" key="button1" target="/start">
           Back
@@ -95,11 +86,7 @@ const handleRequest = frames(async (ctx) => {
   // nothing found
   if (pokeParams.whoStartedIt == "0") {
     return {
-      image: (
-        <div tw="flex flex-col items-center">
-          <p>You don&apos;t have any active poke war with this person!</p>
-        </div>
-      ),
+      image: `${baseUrl}/poke/poke-noActivePokeGame.jpg`,
       buttons,
       state: updatedState,
     }
@@ -114,14 +101,162 @@ const handleRequest = frames(async (ctx) => {
 
   return {
     image: (
-      <div tw="flex flex-col items-center">
-        <div tw="flex">Poke war started by: {pokeParams.whoStartedIt.toString()}</div>
+      <div
+        tw="flex w-full h-full relative items-center justify-center"
+        style={{
+          backgroundImage: `url(${baseUrl}/poke/poke-gameBg.jpg)`,
+          backgroundSize: "cover",
+          fontWeight: 700,
+          color: "#000000",
+        }}
+      >
+
+        {/* Statics */}
+        <div tw="flex w-full h-full absolute bottom-0px left-0px" style={{
+          backgroundImage: `url(${baseUrl}/poke/poke-coins.png)`,
+          backgroundSize: "cover",
+        }}></div>
+
+
+        {/* PFPs */}
+
+        <div tw="flex w-88px h-88px absolute top-365px left-300px" style={{
+          backgroundImage: `url(${baseUrl}/poke/pfp-placeholder-1.jpg)`,
+          backgroundSize: "88px 88px",
+          zIndex: 5,
+        }}></div>
+        <div tw="flex w-88px h-88px absolute top-365px left-760px" style={{
+          backgroundImage: `url(${baseUrl}/poke/pfp-placeholder-2.jpg)`,
+          backgroundSize: "88px 88px",
+          zIndex: 5,
+        }}></div>
+
+
+
+
+        {/* Player One */ }
+        <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+          backgroundImage: `url(${baseUrl}/poke/poke-player-1-pot.png)`,
+          backgroundSize: "cover",
+          zIndex: 10,
+        }}></div>
+
+        
+        {/* Player Two */}
+        <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+          backgroundImage: `url(${baseUrl}/poke/poke-player-2-pot.png)`,  
+          backgroundSize: "cover",
+          zIndex: 10,
+        }}></div>
+
+
+
+
+
+
+        {pokeParams.whoStartedIt.toString() === pokeParams.pokeStatus.lastPokeProfileId.toString() ? (
+          <div tw="flex w-full h-full absolute top-0px left-0px">
+            <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+              backgroundImage: `url(${baseUrl}/poke/poke-player-1-stem-point.png)`,
+              backgroundSize: "cover",
+              zIndex: 15,
+            }}></div>
+            <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+              backgroundImage: `url(${baseUrl}/poke/poke-player-1-face-smile.png)`,
+              backgroundSize: "cover",         
+              zIndex: 20,
+            }}></div>
+            <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+              backgroundImage: `url(${baseUrl}/poke/poke-player-2-stem-default.png)`,
+              backgroundSize: "cover",
+              zIndex: 15,
+            }}></div>
+            <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+              backgroundImage: `url(${baseUrl}/poke/poke-player-2-face-sleep.png)`,
+              backgroundSize: "cover",
+              zIndex: 20,
+            }}></div>
+            <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+              backgroundImage: `url(${baseUrl}/poke/poke-player-1-yourMove.png)`,
+              backgroundSize: "cover",
+              zIndex: 25,
+            }}></div>
+          </div>
+        ) : (
+            <div tw="flex w-full h-full absolute top-0px left-0px">
+              <div tw="flex w-full h-full absolute bottom-0px left-0px" style={{
+                backgroundImage: `url(${baseUrl}/poke/poke-player-1-stem-default.png)`,
+                backgroundSize: "cover",
+                zIndex: 15,
+              }}></div>
+              <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+                backgroundImage: `url(${baseUrl}/poke/poke-player-1-face-sleep.png)`,
+                backgroundSize: "cover",
+                zIndex: 20,
+              }}></div>
+              <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+                backgroundImage: `url(${baseUrl}/poke/poke-player-2-stem-point.png)`,
+                backgroundSize: "cover",
+                zIndex: 15,
+              }}></div>
+              <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+                backgroundImage: `url(${baseUrl}/poke/poke-player-2-face-smile.png)`,
+                backgroundSize: "cover",
+                zIndex: 20,
+              }}></div>
+              <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+                backgroundImage: `url(${baseUrl}/poke/poke-player-2-yourMove.png)`,
+                backgroundSize: "cover",
+                zIndex: 25,
+              }}></div>
+            </div>
+        )}
+
+
+        {/* Text Outputs */}
+
+        <div tw="flex w-full h-full absolute top-0px left-0px items-center justify-center"
+          style={{
+            backgroundImage: `url(${baseUrl}/poke/poke-gameTexts.png)`,
+            backgroundSize: "cover",
+            zIndex: 30,
+            fontWeight: 700,
+            fontSize: "24px",
+            color: "#FFFFFF",
+          }}
+        >
+          <div tw="flex absolute top-535px left-90px">{formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}</div>
+          <div tw="flex absolute top-535px left-523px">{pokeParams.pokeStatus.subgraphData.streak.toString()}</div>
+          {timeRemaining &&
+            (timeRemaining > 0 ? (
+              <div tw="flex absolute top-535px left-878px">{formatTimeRemaining(timeRemaining)}</div>
+            ) : (
+              <div tw="flex">Game Over</div>
+            ))}
+        </div> 
+        
+        
+
+
+        { /* }
+        <div tw="flex">Poke-war started by: {pokeParams.whoStartedIt.toString()}</div>
         <div tw="flex">
           Poke war started at:{" "}
           {new Date(Number(pokeParams.pokeStatus.subgraphData.startedAt) * 1000)
             .toString()
             .substring(0, 25)}
         </div>
+
+
+        <div tw="flex absolute top-540px left-0px">$Bonsai at stake  {formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}</div>
+        <div tw="flex absolute top-540px left-200px">streak  {pokeParams.pokeStatus.subgraphData.streak.toString()}</div>
+        {timeRemaining &&
+          (timeRemaining > 0 ? (
+          <div tw="flex absolute top-540px left-500px">Time remaining to poke back: {formatTimeRemaining(timeRemaining)}</div>
+          ) : (
+            <div tw="flex">Game Over</div>
+          ))}
+
         <div tw="flex">
           Starting amount:{" "}
           {formatUnits(BigInt(pokeParams.pokeStatus.subgraphData.startingAmount), 18)}
@@ -140,6 +275,8 @@ const handleRequest = frames(async (ctx) => {
           ) : (
             <div tw="flex">Game Over</div>
           ))}
+
+          */ }
       </div>
     ),
     buttons,
