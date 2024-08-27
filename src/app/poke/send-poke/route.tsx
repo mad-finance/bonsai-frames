@@ -118,19 +118,17 @@ const handleRequest = frames(async (ctx) => {
       >
 
         {timeRemaining && (timeRemaining > 0 ? (
-          <div>
-            {/* Statics */}
+          <div tw="flex w-full h-full absolute top-0px left-0px">
             <div tw="flex w-full h-full absolute bottom-0px left-0px" style={{
               backgroundImage: `url(${baseUrl}/poke/poke-coins.png)`,
               backgroundSize: "cover",
             }}></div>
-            {/* PFPs */}
             <div tw="flex w-80px h-80px absolute top-365px left-300px" style={{
               backgroundImage: `url(${myProfile.metadata.picture.optimized.uri})`,
               backgroundSize: "80px 80px",
               zIndex: 5,
             }}></div>
-            <div tw="flex w-80px h-80px absolute top-365px left-760px" style={{
+            <div tw="flex w-80px h-80px absolute top-365px left-762px" style={{
               backgroundImage: `url(${otherProfile.metadata.picture.optimized.uri})`,
               backgroundSize: "80px 80px",
               zIndex: 5,
@@ -147,7 +145,6 @@ const handleRequest = frames(async (ctx) => {
               backgroundSize: "cover",
               zIndex: 10,
             }}></div>
-
             {myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? (
               <div tw="flex w-full h-full absolute top-0px left-0px">
                 <div tw="flex w-full h-full absolute top-0px left-0px" style={{
@@ -210,7 +207,9 @@ const handleRequest = frames(async (ctx) => {
                 }}></div>
               </div>
             )}
+
           </div>
+
 
         ) : (
 
