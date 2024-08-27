@@ -153,5 +153,5 @@ export const formatTimeRemaining = (milliseconds: number): string => {
   if (milliseconds <= 0) return "00:00"
   const hours = Math.floor(milliseconds / (1000 * 60 * 60))
   const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60))
-  return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
+  return `${hours.toString().padStart(2, "0")}h ${minutes.toString().padStart(2, "0")}m`
 }

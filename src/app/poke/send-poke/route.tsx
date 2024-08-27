@@ -97,7 +97,9 @@ const handleRequest = frames(async (ctx) => {
     getProfileById(convertIntToHexLensId(updatedState.pokeParams?.toProfileId)),
   ])
 
-  // console.log(myProfile, otherProfile)
+ // console.log(myProfile, otherProfile)
+ // console.log(myProfile.metadata.picture.optimized.uri)
+ // console.log(updatedState.pokeParams?.toProfileId)
 
   return {
     image: (
@@ -119,14 +121,13 @@ const handleRequest = frames(async (ctx) => {
 
 
         {/* PFPs */}
-
         <div tw="flex w-80px h-80px absolute top-365px left-300px" style={{
-          backgroundImage: `url(${baseUrl}/poke/pfp-placeholder-1.jpg)`,
+          backgroundImage: `url(${myProfile.metadata.picture.optimized.uri})`,
           backgroundSize: "80px 80px",
           zIndex: 5,
         }}></div>
         <div tw="flex w-80px h-80px absolute top-365px left-760px" style={{
-          backgroundImage: `url(${baseUrl}/poke/pfp-placeholder-2.jpg)`,
+          backgroundImage: `url(${otherProfile.metadata.picture.optimized.uri})`,
           backgroundSize: "80px 80px",
           zIndex: 5,
         }}></div>
@@ -151,10 +152,23 @@ const handleRequest = frames(async (ctx) => {
 
 
 
+        {/* Temp 
+        <div tw="flex absolute top-0px left-0px" style={{
+          fontWeight: 700,
+          color: "red"
+        }}>
+          {convertIntToHexLensId(pokeParams.whoStartedIt.toString())} // 
+          {convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString())} // 
+          {myProfile.id.toString()} // 
+          {otherProfile.id.toString()}
+        </div>
+        */}
 
 
 
-        {pokeParams.whoStartedIt.toString() === pokeParams.pokeStatus.lastPokeProfileId.toString() ? (
+
+
+        {myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? (
           <div tw="flex w-full h-full absolute top-0px left-0px">
             <div tw="flex w-full h-full absolute top-0px left-0px" style={{
               backgroundImage: `url(${baseUrl}/poke/poke-player-1-stem-point.png)`,
@@ -180,7 +194,7 @@ const handleRequest = frames(async (ctx) => {
               backgroundImage: `url(${baseUrl}/poke/poke-player-1-yourMove.png)`,
               backgroundSize: "cover",
               zIndex: 25,
-            }}></div>
+            }}></div>          
           </div>
         ) : (
             <div tw="flex w-full h-full absolute top-0px left-0px">
@@ -209,6 +223,11 @@ const handleRequest = frames(async (ctx) => {
                 backgroundSize: "cover",
                 zIndex: 25,
               }}></div>
+              <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+                backgroundImage: `url(${baseUrl}/poke/poke-player-1-myMove.png)`,
+                backgroundSize: "cover",
+                zIndex: 30,
+              }}></div>
             </div>
         )}
 
@@ -219,17 +238,17 @@ const handleRequest = frames(async (ctx) => {
           style={{
             backgroundImage: `url(${baseUrl}/poke/poke-gameTexts.png)`,
             backgroundSize: "cover",
-            zIndex: 30,
-            fontWeight: 700,
-            fontSize: "24px",
+            zIndex: "30",
+            fontWeight: "bold",
+            fontSize: "40px",
             color: "#FFFFFF",
           }}
         >
-          <div tw="flex absolute top-535px left-90px">{formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}</div>
-          <div tw="flex absolute top-535px left-523px">{pokeParams.pokeStatus.subgraphData.streak.toString()}</div>
+          <div tw="flex absolute top-500px left-140px">{formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}</div>
+          <div tw="flex absolute top-500px left-0px w-full items-center justify-center">{pokeParams.pokeStatus.subgraphData.streak.toString()}</div>
           {timeRemaining &&
             (timeRemaining > 0 ? (
-              <div tw="flex absolute top-535px left-878px">{formatTimeRemaining(timeRemaining)}</div>
+              <div tw="flex absolute top-500px left-860px">{formatTimeRemaining(timeRemaining)}</div>
             ) : (
               <div tw="flex">Game Over</div>
             ))}
