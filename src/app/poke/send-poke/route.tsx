@@ -214,7 +214,7 @@ const handleRequest = frames(async (ctx) => {
         ) : (
 
           <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-            backgroundImage: `url(${myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? `${baseUrl}/poke/poke-wonBg.jpg` : `${baseUrl}/poke/poke-lostBg.jpg`})`,
+            backgroundImage: `url(${myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? `${baseUrl}/poke/poke-lostBg.jpg` : `${baseUrl}/poke/poke-wonBg.jpg`})`,
             backgroundSize: "cover",
           }}>
 
@@ -232,7 +232,7 @@ const handleRequest = frames(async (ctx) => {
 
             {/* Statics */}
             < div tw="flex w-full h-full absolute bottom-0px left-0px" style={{
-                backgroundImage: `url(${myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? `${baseUrl}/poke/poke-wonLayer2.png` : `${baseUrl}/poke/poke-lostLayer.png`})`,
+                backgroundImage: `url(${myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? `${baseUrl}/poke/poke-lostLayer.png` : `${baseUrl}/poke/poke-wonLayer2.png`})`,
                 backgroundSize: "cover",
                 zIndex: 10,
             }}></div>
