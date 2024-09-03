@@ -145,7 +145,7 @@ const handleRequest = frames(async (ctx) => {
               backgroundSize: "cover",
               zIndex: 10,
             }}></div>
-            {myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? (
+            {myProfile && myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? (
               <div tw="flex w-full h-full absolute top-0px left-0px">
                 <div tw="flex w-full h-full absolute top-0px left-0px" style={{
                   backgroundImage: `url(${baseUrl}/poke/poke-player-1-stem-point.png)`,
@@ -213,7 +213,10 @@ const handleRequest = frames(async (ctx) => {
 
         ) : (
 
-          <div tw="flex w-full h-full absolute top-0px left-0px">
+          <div tw="flex w-full h-full absolute top-0px left-0px" style={{
+            backgroundImage: `url(${myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? `${baseUrl}/poke/poke-wonBg.jpg` : `${baseUrl}/poke/poke-lostBg.jpg`})`,
+            backgroundSize: "cover",
+          }}>
 
             {/* PFPs */}
             <div tw="flex w-80px h-80px absolute top-365px left-410px" style={{
@@ -229,9 +232,9 @@ const handleRequest = frames(async (ctx) => {
 
             {/* Statics */}
             < div tw="flex w-full h-full absolute bottom-0px left-0px" style={{
-              backgroundImage: `url(${baseUrl}/poke/poke-wonLayer2.png)`,
-              backgroundSize: "cover",
-              zIndex: 10,
+                backgroundImage: `url(${myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? `${baseUrl}/poke/poke-wonLayer2.png` : `${baseUrl}/poke/poke-lostLayer.png`})`,
+                backgroundSize: "cover",
+                zIndex: 10,
             }}></div>
 
           </div>
