@@ -63,10 +63,14 @@ const handleRequest = frames(async (ctx) => {
   const lastPokeTimestamp = Number(pokeParams.pokeStatus.lastPokeTimestamp) * 1000 // Convert to milliseconds
   const pokeDeadline = lastPokeTimestamp + 36 * 60 * 60 * 1000 // Add 36 hours in milliseconds
   const timeRemaining = lastPokeTimestamp > 0 ? pokeDeadline - Date.now() : null
-  
-  const daysPlayed = Math.floor((Date.now() - Number(pokeParams.pokeStatus.subgraphData.startedAt) * 1000) / (24 * 60 * 60 * 1000));
-  // console.log("daysPlayed", daysPlayed) 
 
+  const daysPlayed = pokeParams.pokeStatus.subgraphData
+    ? Math.floor(
+        (Date.now() - Number(pokeParams.pokeStatus.subgraphData.startedAt) * 1000) /
+          (24 * 60 * 60 * 1000)
+      )
+    : 0
+  // console.log("daysPlayed", daysPlayed)
 
   // only show poke button if its your turn to poke
   let buttons = [
@@ -101,9 +105,9 @@ const handleRequest = frames(async (ctx) => {
     getProfileById(convertIntToHexLensId(updatedState.pokeParams?.toProfileId)),
   ])
 
- // console.log(myProfile, otherProfile)
- // console.log(myProfile.metadata.picture.optimized.uri)
- // console.log(updatedState.pokeParams?.toProfileId)
+  // console.log(myProfile, otherProfile)
+  // console.log(myProfile.metadata.picture.optimized.uri)
+  // console.log(updatedState.pokeParams?.toProfileId)
 
   return {
     image: (
@@ -116,134 +120,197 @@ const handleRequest = frames(async (ctx) => {
           color: "#000000",
         }}
       >
-
-        {timeRemaining && (timeRemaining > 0 ? (
-          <div tw="flex w-full h-full absolute top-0px left-0px">
-            <div tw="flex w-full h-full absolute bottom-0px left-0px" style={{
-              backgroundImage: `url(${baseUrl}/poke/poke-coins.png)`,
-              backgroundSize: "cover",
-            }}></div>
-            <div tw="flex w-80px h-80px absolute top-365px left-300px" style={{
-              backgroundImage: `url(${myProfile.metadata.picture.optimized.uri})`,
-              backgroundSize: "80px 80px",
-              zIndex: 5,
-            }}></div>
-            <div tw="flex w-80px h-80px absolute top-365px left-762px" style={{
-              backgroundImage: `url(${otherProfile.metadata.picture.optimized.uri})`,
-              backgroundSize: "80px 80px",
-              zIndex: 5,
-            }}></div>
-            {/* Player One */}
-            <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-              backgroundImage: `url(${baseUrl}/poke/poke-player-1-pot.png)`,
-              backgroundSize: "cover",
-              zIndex: 10,
-            }}></div>
-            {/* Player Two */}
-            <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-              backgroundImage: `url(${baseUrl}/poke/poke-player-2-pot.png)`,
-              backgroundSize: "cover",
-              zIndex: 10,
-            }}></div>
-            {myProfile && myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? (
-              <div tw="flex w-full h-full absolute top-0px left-0px">
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-1-stem-point.png)`,
+        {timeRemaining &&
+          (timeRemaining > 0 ? (
+            <div tw="flex w-full h-full absolute top-0px left-0px">
+              <div
+                tw="flex w-full h-full absolute bottom-0px left-0px"
+                style={{
+                  backgroundImage: `url(${baseUrl}/poke/poke-coins.png)`,
                   backgroundSize: "cover",
-                  zIndex: 15,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-1-face-smile.png)`,
+                }}
+              ></div>
+              <div
+                tw="flex w-80px h-80px absolute top-365px left-300px"
+                style={{
+                  backgroundImage: `url(${myProfile.metadata.picture.optimized.uri})`,
+                  backgroundSize: "80px 80px",
+                  zIndex: 5,
+                }}
+              ></div>
+              <div
+                tw="flex w-80px h-80px absolute top-365px left-762px"
+                style={{
+                  backgroundImage: `url(${otherProfile.metadata.picture.optimized.uri})`,
+                  backgroundSize: "80px 80px",
+                  zIndex: 5,
+                }}
+              ></div>
+              {/* Player One */}
+              <div
+                tw="flex w-full h-full absolute top-0px left-0px"
+                style={{
+                  backgroundImage: `url(${baseUrl}/poke/poke-player-1-pot.png)`,
                   backgroundSize: "cover",
-                  zIndex: 20,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-2-stem-default.png)`,
+                  zIndex: 10,
+                }}
+              ></div>
+              {/* Player Two */}
+              <div
+                tw="flex w-full h-full absolute top-0px left-0px"
+                style={{
+                  backgroundImage: `url(${baseUrl}/poke/poke-player-2-pot.png)`,
                   backgroundSize: "cover",
-                  zIndex: 15,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-2-face-sleep.png)`,
-                  backgroundSize: "cover",
-                  zIndex: 20,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-1-yourMove.png)`,
-                  backgroundSize: "cover",
-                  zIndex: 25,
-                }}></div>
-              </div>
-            ) : (
-              <div tw="flex w-full h-full absolute top-0px left-0px">
-                <div tw="flex w-full h-full absolute bottom-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-1-stem-default.png)`,
-                  backgroundSize: "cover",
-                  zIndex: 15,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-1-face-sleep.png)`,
-                  backgroundSize: "cover",
-                  zIndex: 20,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-2-stem-point.png)`,
-                  backgroundSize: "cover",
-                  zIndex: 15,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-2-face-smile.png)`,
-                  backgroundSize: "cover",
-                  zIndex: 20,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-2-yourMove.png)`,
-                  backgroundSize: "cover",
-                  zIndex: 25,
-                }}></div>
-                <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-                  backgroundImage: `url(${baseUrl}/poke/poke-player-1-myMove.png)`,
-                  backgroundSize: "cover",
-                  zIndex: 30,
-                }}></div>
-              </div>
-            )}
-
-          </div>
-
-
-        ) : (
-
-          <div tw="flex w-full h-full absolute top-0px left-0px" style={{
-            backgroundImage: `url(${myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? `${baseUrl}/poke/poke-lostBg.jpg` : `${baseUrl}/poke/poke-wonBg.jpg`})`,
-            backgroundSize: "cover",
-          }}>
-
-            {/* PFPs */}
-            <div tw="flex w-80px h-80px absolute top-365px left-410px" style={{
-              backgroundImage: `url(${myProfile.metadata.picture.optimized.uri})`,
-              backgroundSize: "80px 80px",
-              zIndex: 5,
-            }}></div>
-            <div tw="flex w-80px h-80px absolute top-365px left-633px" style={{
-              backgroundImage: `url(${otherProfile.metadata.picture.optimized.uri})`,
-              backgroundSize: "80px 80px",
-              zIndex: 5,
-            }}></div>
-
-            {/* Statics */}
-            < div tw="flex w-full h-full absolute bottom-0px left-0px" style={{
-                backgroundImage: `url(${myProfile.id.toString() === convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? `${baseUrl}/poke/poke-lostLayer.png` : `${baseUrl}/poke/poke-wonLayer2.png`})`,
+                  zIndex: 10,
+                }}
+              ></div>
+              {myProfile &&
+              myProfile.id.toString() ===
+                convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString()) ? (
+                <div tw="flex w-full h-full absolute top-0px left-0px">
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-1-stem-point.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 15,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-1-face-smile.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 20,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-2-stem-default.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 15,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-2-face-sleep.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 20,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-1-yourMove.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 25,
+                    }}
+                  ></div>
+                </div>
+              ) : (
+                <div tw="flex w-full h-full absolute top-0px left-0px">
+                  <div
+                    tw="flex w-full h-full absolute bottom-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-1-stem-default.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 15,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-1-face-sleep.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 20,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-2-stem-point.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 15,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-2-face-smile.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 20,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-2-yourMove.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 25,
+                    }}
+                  ></div>
+                  <div
+                    tw="flex w-full h-full absolute top-0px left-0px"
+                    style={{
+                      backgroundImage: `url(${baseUrl}/poke/poke-player-1-myMove.png)`,
+                      backgroundSize: "cover",
+                      zIndex: 30,
+                    }}
+                  ></div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div
+              tw="flex w-full h-full absolute top-0px left-0px"
+              style={{
+                backgroundImage: `url(${
+                  myProfile.id.toString() ===
+                  convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString())
+                    ? `${baseUrl}/poke/poke-lostBg.jpg`
+                    : `${baseUrl}/poke/poke-wonBg.jpg`
+                })`,
                 backgroundSize: "cover",
-                zIndex: 10,
-            }}></div>
+              }}
+            >
+              {/* PFPs */}
+              <div
+                tw="flex w-80px h-80px absolute top-365px left-410px"
+                style={{
+                  backgroundImage: `url(${myProfile.metadata.picture.optimized.uri})`,
+                  backgroundSize: "80px 80px",
+                  zIndex: 5,
+                }}
+              ></div>
+              <div
+                tw="flex w-80px h-80px absolute top-365px left-633px"
+                style={{
+                  backgroundImage: `url(${otherProfile.metadata.picture.optimized.uri})`,
+                  backgroundSize: "80px 80px",
+                  zIndex: 5,
+                }}
+              ></div>
 
-          </div>
+              {/* Statics */}
+              <div
+                tw="flex w-full h-full absolute bottom-0px left-0px"
+                style={{
+                  backgroundImage: `url(${
+                    myProfile.id.toString() ===
+                    convertIntToHexLensId(pokeParams.pokeStatus.lastPokeProfileId.toString())
+                      ? `${baseUrl}/poke/poke-lostLayer.png`
+                      : `${baseUrl}/poke/poke-wonLayer2.png`
+                  })`,
+                  backgroundSize: "cover",
+                  zIndex: 10,
+                }}
+              ></div>
+            </div>
+          ))}
 
-        ))}
-
-
-
-        { /* 
+        {/* 
 
 
 
@@ -310,13 +377,16 @@ const handleRequest = frames(async (ctx) => {
             </div>
         )}
 
-          Poke Status */ }
-
+          Poke Status */}
 
         <div
           tw="flex w-full h-full absolute top-0px left-0px items-center justify-center"
           style={{
-            backgroundImage: `url(${timeRemaining && timeRemaining > 0 ? `${baseUrl}/poke/poke-gameTexts.png` : `${baseUrl}/poke/poke-wonTexts.png`})`,
+            backgroundImage: `url(${
+              timeRemaining && timeRemaining > 0
+                ? `${baseUrl}/poke/poke-gameTexts.png`
+                : `${baseUrl}/poke/poke-wonTexts.png`
+            })`,
             backgroundSize: "cover",
             zIndex: "30",
             fontWeight: "bold",
@@ -324,13 +394,20 @@ const handleRequest = frames(async (ctx) => {
             color: "#FFFFFF",
           }}
         >
-          <div tw="flex absolute top-500px left-140px">{formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}</div>
-          <div tw="flex absolute top-500px left-0px w-full items-center justify-center">{pokeParams.pokeStatus.subgraphData.streak.toString()}</div>
-          {timeRemaining && (timeRemaining > 0 ? (
-            <div tw="flex absolute top-500px left-860px">{formatTimeRemaining(timeRemaining)}</div>
-          ) : (
-            <div tw="flex absolute top-500px left-860px">{daysPlayed}</div>
-          ))}
+          <div tw="flex absolute top-500px left-140px">
+            {formatUnits(BigInt(pokeParams.pokeStatus.amount), 18)}
+          </div>
+          <div tw="flex absolute top-500px left-0px w-full items-center justify-center">
+            {pokeParams.pokeStatus.subgraphData.streak.toString()}
+          </div>
+          {timeRemaining &&
+            (timeRemaining > 0 ? (
+              <div tw="flex absolute top-500px left-860px">
+                {formatTimeRemaining(timeRemaining)}
+              </div>
+            ) : (
+              <div tw="flex absolute top-500px left-860px">{daysPlayed}</div>
+            ))}
         </div>
       </div>
     ),

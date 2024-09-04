@@ -64,7 +64,7 @@ const POKE_WAR = gql`
 
 const GET_ALL_MY_POKES = gql`
   query PokeWar($id: Int!) {
-    startedByMe: pokeWars(where: { startedByProfileId: $id }) {
+    startedByMe: pokeWars(where: { startedByProfileId: $id, endedAt_not: null }) {
       nonce
       startedAt
       endedAt
@@ -78,7 +78,7 @@ const GET_ALL_MY_POKES = gql`
       toProfileId
       streak
     }
-    toMe: pokeWars(where: { toProfileId: $id }) {
+    toMe: pokeWars(where: { toProfileId: $id, endedAt_not: null }) {
       nonce
       startedAt
       endedAt
