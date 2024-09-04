@@ -12,6 +12,11 @@ export const getProfileById = async (forProfileId) => {
   return profile
 }
 
+export const getHandleById = async (forProfileId) => {
+  const profile = await lensClient.profile.fetch({ forProfileId })
+  return profile?.handle?.localName
+}
+
 export const getSharedTable = async (forId: string) => {
   const publication = await lensClient.publication.fetch({ forId })
   if (publication) {

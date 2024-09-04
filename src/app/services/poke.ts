@@ -63,7 +63,7 @@ const POKE_WAR = gql`
 `
 
 const GET_ALL_MY_POKES = gql`
-  query PokeWar($id: Bytes!) {
+  query PokeWar($id: Int!) {
     startedByMe: pokeWars(where: { startedByProfileId: $id }) {
       nonce
       startedAt
