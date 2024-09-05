@@ -5,13 +5,27 @@ import { getHandleById } from "@/app/services/lens"
 import { convertIntToHexLensId } from "@/app/services/treasureHunt"
 
 const handleRequest = frames(async (ctx) => {
-  const activePokes = await getAllMyActivePokes(Number(ctx.message.profileId))
-  const startedByMe = await Promise.all(
-    activePokes.startedByMe.map((poke) => getHandleById(convertIntToHexLensId(poke.toProfileId)))
+  const activePokes = await getAllMyActivePokes(Number(ctx.message?.profileId))
+  console.log(ctx.message?.profileId, activePokes)
+
+  const startedByMeWithHandles = await Promise.all(
+    activePokes.startedByMe.map(async (poke) => ({
+      ...poke,
+      opponentHandle: await getHandleById(convertIntToHexLensId(poke.toProfileId)),
+    }))
   )
-  const toMe = await Promise.all(
-    activePokes.toMe.map((poke) => getHandleById(convertIntToHexLensId(poke.startedByProfileId)))
+
+  const toMeWithHandles = await Promise.all(
+    activePokes.toMe.map(async (poke) => ({
+      ...poke,
+      opponentHandle: await getHandleById(convertIntToHexLensId(poke.startedByProfileId)),
+    }))
   )
+
+  const updatedActivePokes = {
+    startedByMe: startedByMeWithHandles,
+    toMe: toMeWithHandles,
+  }
   return {
     image: (
       <div
@@ -27,9 +41,16 @@ const handleRequest = frames(async (ctx) => {
           <div tw="flex flex-col">
             <h2 tw="text-6xl font-bold">Pokes Started by Me:</h2>
             <div tw="flex flex-wrap">
-              {startedByMe.map((handle, index) => (
-                <span key={index} tw="pr-6 text-5xl">
-                  @{handle}
+              {updatedActivePokes.startedByMe.map((poke, index) => (
+                <span
+                  key={index}
+                  tw={`pr-6 text-5xl ${
+                    Number(ctx.message?.profileId) === Number(poke.lastPokeProfileId)
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  @{poke.opponentHandle}
                 </span>
               ))}
             </div>
@@ -37,9 +58,16 @@ const handleRequest = frames(async (ctx) => {
           <div tw="flex flex-col">
             <h2 tw="text-6xl font-bold">Pokes to Me:</h2>
             <div tw="flex flex-wrap">
-              {toMe.map((handle, index) => (
-                <span key={index} tw="pr-6 text-5xl">
-                  @{handle}
+              {updatedActivePokes.toMe.map((poke, index) => (
+                <span
+                  key={index}
+                  tw={`pr-6 text-5xl ${
+                    Number(ctx.message?.profileId) === Number(poke.lastPokeProfileId)
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  @{poke.opponentHandle}
                 </span>
               ))}
             </div>
