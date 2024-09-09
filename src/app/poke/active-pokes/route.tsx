@@ -31,7 +31,7 @@ const handleRequest = frames(async (ctx) => {
       <div
         tw="flex w-full h-full p-4"
         style={{
-          backgroundImage: `url(${baseUrl}/poke/poke-start-trans.jpg)`,
+          backgroundImage: `url(${baseUrl}/poke/poke-activePokesBG.jpg)`,
           backgroundSize: "cover",
           fontWeight: 700,
           color: "#000000",
@@ -39,16 +39,19 @@ const handleRequest = frames(async (ctx) => {
       >
         <div tw="flex flex-col w-full h-full">
           <div tw="flex flex-col">
-            <h2 tw="text-6xl font-bold">Pokes Started by Me:</h2>
+            <div tw="flex w-full h-15 mt-20 mb-2" style={{
+              backgroundImage: `url(${baseUrl}/poke/titlePokesStartedByMe.png)`,
+              backgroundSize: "auto 100%",
+              backgroundRepeat: "no-repeat",
+            }}></div>
             <div tw="flex flex-wrap">
               {updatedActivePokes.startedByMe.map((poke, index) => (
                 <span
                   key={index}
-                  tw={`pr-6 text-5xl ${
-                    Number(ctx.message?.profileId) === Number(poke.lastPokeProfileId)
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
+                  tw={`text-4xl text-white px-5 py-2 m-2 rounded-lg border-neutral-500 border-2 ${Number(ctx.message?.profileId) === Number(poke.lastPokeProfileId)
+                      ? "bg-lime-700"
+                      : "bg-rose-600"
+                    }`}
                 >
                   @{poke.opponentHandle}
                 </span>
@@ -56,16 +59,19 @@ const handleRequest = frames(async (ctx) => {
             </div>
           </div>
           <div tw="flex flex-col">
-            <h2 tw="text-6xl font-bold">Pokes to Me:</h2>
+            <div tw="flex w-full h-15 mt-15 mb-2" style={{
+              backgroundImage: `url(${baseUrl}/poke/titlePokesStartedBySomeoneElse.png)`,
+              backgroundSize: "auto 100%",
+              backgroundRepeat: "no-repeat",
+            }}></div>
             <div tw="flex flex-wrap">
               {updatedActivePokes.toMe.map((poke, index) => (
                 <span
                   key={index}
-                  tw={`pr-6 text-5xl ${
-                    Number(ctx.message?.profileId) === Number(poke.lastPokeProfileId)
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
+                  tw={`text-4xl text-white px-5 py-2 m-2 rounded-lg border-neutral-500 border-2  ${Number(ctx.message?.profileId) === Number(poke.lastPokeProfileId)
+                    ? "bg-lime-700"
+                    : "bg-rose-600"
+                    }`}
                 >
                   @{poke.opponentHandle}
                 </span>
