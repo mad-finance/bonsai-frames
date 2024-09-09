@@ -6,7 +6,7 @@ import { lensClient } from "./lens"
 import { ApolloClient, HttpLink, InMemoryCache, gql } from "@apollo/client"
 import { convertIntToHexLensId } from "./treasureHunt"
 
-export const POKE_ADDRESS = "0x3e3568b5f98e109Eec0DBb8B18eD8ED4A56A62b9"
+export const POKE_ADDRESS = "0xBAfabd7e293581d5D4f368e420684FB8B29234dE"
 
 export const DEFAULT_POKE_AMOUNT = parseUnits("100", 18)
 export const DEFAULT_POKE_INCREMENT = parseUnits("1", 18)
